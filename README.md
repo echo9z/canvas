@@ -399,7 +399,7 @@ ctx.stroke(); // Render the path
     </script>
 ```
 
-![](assets/iShot_2023-09-23_01.53.23.png)
+<img src="assets/iShot_2023-09-23_01.53.23.png" title="" alt="" data-align="center">
 
 ## 移动笔触
 
@@ -703,3 +703,120 @@ Q0 与 Q1 之间的连线，Q1 与 Q2之间的连线，形成R0 与 R1
 ```
 
 <img src="assets/iShot_2023-09-23_01.43.57.png" title="" alt="" data-align="center">
+
+三次贝塞尔曲线画爱心
+
+```html
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 绘制贝塞尔曲线
+      // ctx.bezierCurveTo(控制x,控制y,控制x,控制y, 结束点x，结束点y)
+      ctx2D.moveTo(220, 100);
+      ctx2D.bezierCurveTo(100, 50, 80, 170, 220, 250);
+      ctx2D.bezierCurveTo(360, 170, 340, 50, 220, 100);
+      ctx2D.strokeStyle = "red";
+
+      ctx2D.stroke();
+      ctx2D.closePath();
+
+      ctx2D.beginPath();
+      ctx2D.fillStyle = "rgba(255, 255, 0, 0.8)";
+      ctx2D.arc(100, 50, 5, 0, Math.PI * 2); // 起始点
+
+      ctx2D.moveTo(90, 170);
+      ctx2D.arc(80, 170, 5, 0, Math.PI * 2); // 终点
+
+      ctx2D.moveTo(390, 170);
+      ctx2D.arc(360, 170, 5, 0, Math.PI * 2); // 终点
+
+      ctx2D.moveTo(330, 50);
+      ctx2D.arc(340, 50, 5, 0, Math.PI * 2); // 终点
+      ctx2D.fill();
+      ctx2D.closePath();
+    </script>
+```
+
+![](assets/iShot_2023-09-23_02.43.03.png)
+
+## Path2D 对象
+
+    在前面例子中看到的，使用一系列的路径和绘画命令来把对象“画”在画布上。为了简化代码和提高性能，Path2D对象已可以在较新版本的浏览器中使用，用来缓存或记录绘画命令，这样你将能快速地回顾路径。
+
+    **`Path2D()`** 构造函数返回一个新的 `Path2D` 对象的实例，可以选择另一条路径作为参数（创建一个拷贝），或者选择 [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths) 数据构成的字符串。
+
+    所有的路径方法比如moveTo, rect, arc或quadraticCurveTo等，如我们前面见过的，都可以在 Path2D 中使用。
+
+    Path2D API 添加了 addPath作为将path结合起来的方法。当你想要从几个元素中来创建对象时，这将会很实用。比如：
+
+`Path2D.addPath(path [, transform])`
+
+添加了一条路径到当前路径（可能添加了一个变换矩阵）。
+
+```js
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let path1 = new Path2D();
+path1.rect(10, 10, 100, 100);
+
+let path2 = new Path2D(path1);
+path2.moveTo(220, 60);
+path2.arc(170, 60, 50, 0, 2 * Math.PI);
+
+ctx.strokeStyle = "red";
+ctx.stroke(path2);
+```
+
+```html
+    <canvas id="cav" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 有了 Path2D 来封装路径，专门用于绘制路径
+      var path2D = new Path2D();
+
+      path2D.moveTo(220, 100);
+      path2D.bezierCurveTo(100, 50, 80, 170, 220, 250);
+      path2D.bezierCurveTo(360, 170, 340, 50, 220, 100);
+      ctx2D.strokeStyle = "red";
+      ctx2D.stroke(path2D);
+
+      var chat2D = new Path2D();
+      chat2D.moveTo(200, 150); // 起始点
+      chat2D.quadraticCurveTo(210, 100, 280, 100);
+      chat2D.quadraticCurveTo(350, 100, 360, 150);
+      chat2D.quadraticCurveTo(360, 200, 300, 200);
+      chat2D.quadraticCurveTo(280, 230, 250, 230);
+      chat2D.quadraticCurveTo(260, 220, 260, 200);
+      chat2D.quadraticCurveTo(200, 200, 200, 150);
+      ctx2D.fillStyle='rgba(0, 0, 255, 0.5)';
+      ctx2D.strokeStyle='rgba(255, 255, 0, 1)';
+      ctx2D.stroke(chat2D);
+      ctx2D.fill(chat2D);
+    </script>
+```
+
+![](assets/iShot_2023-09-23_04.04.35.png)
+
+Path2D 选择 [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths) 数据构成的字符串
+
+```js
+      // M10 10移动到moveTo(x,y) h水平移到80位置 v垂直移动到80 h水平移到-80 z回到启点
+      var svg2D = new Path2D('M10 10 h 80 v 80 h -80 z'); 
+      ctx2D.stroke(svg2D)
+```

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="cav" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 绘制贝塞尔曲线
+      // ctx.bezierCurveTo(控制x,控制y,控制x,控制y, 结束点x，结束点y)
+      ctx2D.moveTo(220, 100);
+      ctx2D.bezierCurveTo(100, 50, 80, 170, 220, 250);
+      ctx2D.bezierCurveTo(360, 170, 340, 50, 220, 100);
+      ctx2D.strokeStyle = "red";
+
+      ctx2D.stroke();
+      ctx2D.closePath();
+
+      ctx2D.beginPath();
+      ctx2D.fillStyle = "rgba(255, 255, 0, 0.8)";
+      ctx2D.arc(100, 50, 5, 0, Math.PI * 2); // 起始点
+
+      ctx2D.moveTo(90, 170);
+      ctx2D.arc(80, 170, 5, 0, Math.PI * 2); // 终点
+
+      ctx2D.moveTo(390, 170);
+      ctx2D.arc(360, 170, 5, 0, Math.PI * 2); // 终点
+
+      ctx2D.moveTo(330, 50);
+      ctx2D.arc(340, 50, 5, 0, Math.PI * 2); // 终点
+      ctx2D.fill();
+      ctx2D.closePath();
+    </script>
+  </body>
+</html>

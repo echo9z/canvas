@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="cav" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 有了 Path2D 来封装路径，专门用于绘制路径
+      var path2D = new Path2D();
+
+      path2D.moveTo(220, 100);
+      path2D.bezierCurveTo(100, 50, 80, 170, 220, 250);
+      path2D.bezierCurveTo(360, 170, 340, 50, 220, 100);
+      ctx2D.strokeStyle = "red";
+      ctx2D.stroke(path2D);
+
+      var chat2D = new Path2D();
+      chat2D.moveTo(200, 150); // 起始点
+      chat2D.quadraticCurveTo(210, 100, 280, 100);
+      chat2D.quadraticCurveTo(350, 100, 360, 150);
+      chat2D.quadraticCurveTo(360, 200, 300, 200);
+      chat2D.quadraticCurveTo(280, 230, 250, 230);
+      chat2D.quadraticCurveTo(260, 220, 260, 200);
+      chat2D.quadraticCurveTo(200, 200, 200, 150);
+      ctx2D.fillStyle='rgba(0, 0, 255, 0.5)';
+      ctx2D.strokeStyle='rgba(255, 255, 0, 1)';
+      ctx2D.stroke(chat2D);
+      ctx2D.fill(chat2D);
+
+      // M10 10移动到moveTo(x,y) h水平移到80位置 v垂直移动到80 h水平移到-80 z回到启点
+      var svg2D = new Path2D('M10 10 h 80 v 80 h -80 z'); 
+      ctx2D.stroke(svg2D)
+
+    </script>
+  </body>
+</html>
