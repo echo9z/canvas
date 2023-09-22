@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="cav" width="600" height="400" >
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (!ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+
+    // arc绘制圆弧
+    // ctx.arc(圆心x,圆心y,半径, 开始角度, 结束角度, 顺时针逆时针)
+
+    ctx2D.beginPath();
+    ctx2D.strokeStyle='green';
+    // 0 到 90°
+    ctx2D.arc(300, 200, 100, 0,  2*Math.PI, false); // 脸
+    ctx2D.moveTo(280, 175); // 计算方式，移动到距离中心点 (下一次要画圆中心点+画圆的半径)(260 + 20, 175)
+    
+    ctx2D.arc(260, 175, 20, 0, Math.PI*2, false); // 左眼睛
+    ctx2D.moveTo(360, 175);
+    
+    ctx2D.arc(340, 175, 20, 0, Math.PI*2, false); // 右眼睛
+    ctx2D.moveTo(375, 200);
+
+    ctx2D.arc(300, 200, 75, 0, Math.PI, false); // 嘴巴眼睛
+    ctx2D.stroke(); // 描边画圆
+    ctx2D.closePath();
+  </script>
+</body>
+</html>

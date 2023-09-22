@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <canvas id="cav" width="150" height="150" style="border: 1px dashed;">
+    </canvas>
+  </div>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+    
+    // 3.绘制图形 
+    // 3.1 绘制矩形 fillRect(x, y, width, height) fillRect路径绘制
+    ctx2D.strokeStyle = "green";
+    ctx2D.strokeRect(50, 50, 50, 50)
+
+    // 拆分写法
+    ctx2D.strokeStyle='rgba(255,0,0, 1)';
+    ctx2D.rect(100, 100, 50, 50)
+    ctx2D.stroke()
+  </script>
+</body>
+</html>

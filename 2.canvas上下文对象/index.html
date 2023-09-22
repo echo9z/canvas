@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 
+    id: 标识元素的唯一性
+    width：画布宽度
+    height：画布的高度
+  -->
+  <canvas id="emerge" width="600" height="400" >
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var c1 = document.getElementById("emerge");
+    // 2.获取画笔，上下文对象
+    var ctx = c1.getContext("2d");
+    console.log("🚀 ~ ctx:", ctx) // CanvasRenderingContext2D对象画笔对象
+
+  
+    // 处理兼容问题，不支持canvas浏览器
+    if(!ctx.getContext) c1.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+
+    // console.log(document.body);
+    // console.log(document.body.getContext);
+    // console.log(c1.getContext);
+
+    // 3.绘制图形
+    // 3.1 绘制矩形 fillRect(x, y, width, height)
+    ctx.fillRect(100, 200, 300, 300)
+  </script>
+</body><i class="mdi mdi-jellyfish-outline:"></i>

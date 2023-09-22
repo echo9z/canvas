@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="cav" width="600" height="400" >
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (!ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+
+    // arc绘制圆弧
+    // ctx.arc(圆心x,圆心y,半径, 开始角度, 结束角度, 顺时针逆时针)
+    ctx2D.beginPath();
+    // 0 到 360°
+    ctx2D.arc(200, 200, 50, 0, 2 * Math.PI, true);
+    ctx2D.fill(); // 填充画圆
+    ctx2D.closePath();
+
+    ctx2D.beginPath();
+    ctx2D.strokeStyle='green';
+    // 0 到 90°
+    ctx2D.arc(300, 300, 50, 0,  Math.PI/2, false);
+    ctx2D.stroke(); // 描边画圆
+    ctx2D.closePath();
+  </script>
+</body>
+</html>

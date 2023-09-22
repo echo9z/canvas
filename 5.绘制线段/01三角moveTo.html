@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="cav" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext) cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 通过moveTo和lineTo 绘制直线
+      ctx2D.beginPath();
+      ctx2D.moveTo(100, 20);
+      ctx2D.lineTo(10, 20);
+      ctx2D.stroke();
+      ctx2D.closePath();
+
+      ctx2D.beginPath();
+      ctx2D.setLineDash([5, 15, 10]); // 设置虚线
+      ctx2D.moveTo(100, 30);
+      ctx2D.lineTo(20, 30);
+      ctx2D.stroke();
+      ctx2D.closePath();
+
+      // 通过moveTo和lineTo绘制三角形
+      ctx2D.beginPath();
+      ctx2D.setLineDash([]);
+      ctx2D.moveTo(120, 50); // 属于起点 (x:120, y:50)
+      ctx2D.lineTo(50, 120); // 起点到 （x:50, y:120)
+      ctx2D.lineTo(50, 50);
+      ctx2D.lineTo(120, 50);
+      ctx2D.stroke();
+      ctx2D.closePath();
+
+      ctx2D.beginPath();
+      ctx2D.moveTo(130, 60); // 属于起点 (x:120, y:50)
+      ctx2D.lineTo(130, 130); // 起点到 （x:50, y:120)
+      ctx2D.lineTo(60, 130);
+      ctx2D.lineTo(130, 60);
+
+      ctx2D.fill();
+      ctx2D.closePath();
+    </script>
+  </body>
+</html>

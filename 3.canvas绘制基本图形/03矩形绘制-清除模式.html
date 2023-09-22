@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <canvas id="cav" width="150" height="150" style="border: 1px dashed;">
+    </canvas>
+  </div>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+    
+    // 3.绘制图形 
+    // 3.1 绘制矩形 fillRect(x, y, width, height) fillRect路径绘制
+    // 分段绘制图形beginPath 和 closePath
+    ctx2D.beginPath();
+    ctx2D.strokeStyle = "green";
+    // ctx2D.strokeRect(50, 50, 50, 50)
+    // 拆分写法
+    ctx2D.rect(50, 50, 50, 50)
+    ctx2D.stroke() // 显示路径
+    ctx2D.closePath();
+
+    // 再次绘制一个矩形
+    ctx2D.beginPath();
+    ctx2D.fillStyle='red';
+    // ctx2D.fillRect(100,100, 50,50);
+    ctx2D.rect(100,100, 50,50);
+    ctx2D.fill();
+    ctx2D.closePath();
+
+    // 清除画布上绘制的矩形
+    // 从左上角清除，清除宽度和 高度 与canvas画布一样大小
+    // ctx2D.clearRect(0, 0, cav.width, cav.height);
+    // ctx2D.clearRect(60, 60, 50, 50);
+    let height = 0
+    let clearTime = setInterval(() => {
+      if(height >= 60) clearInterval(clearTime)
+      height++
+      console.log("🚀 ~ file: 03矩形绘制-清除模式.html:37 ~ clearTime ~ height:", height)
+      ctx2D.clearRect(60, 60, height, height);
+    },100)
+
+  </script>
+</body>
+</html>

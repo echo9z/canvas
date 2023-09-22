@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="cav" width="600" height="400" >
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (!ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+
+    // arcTo(x1,y1,x2,y2,r)绘制圆弧arcTo(x坐标1,y坐标1, x坐标2,y坐标2, 半径)
+    ctx2D.beginPath();
+    // 先有设置起始点为
+    ctx2D.moveTo(150, 40); // 第一个点
+    ctx2D.arcTo(150, 80, 110, 80, 40); // 圆弧，通过三个点，来确定圆弧弧度
+    ctx2D.stroke();
+    ctx2D.closePath();
+
+    // 先有设置起始点为
+    ctx2D.fillStyle='rgba(255,0,0,0.8)';
+    ctx2D.fillRect(150, 40, 10, 10);
+
+    ctx2D.fillStyle='rgba(255,255,0,0.8)';
+    ctx2D.fillRect(150, 80, 10, 10);
+
+    ctx2D.fillRect(110, 80, 10, 10);
+
+    // 画虚线setLineDash([]); 传入一个数组
+    ctx2D.setLineDash([5,5]);
+    ctx2D.beginPath();
+    ctx2D.moveTo(150, 40); // 第一个点
+    ctx2D.lineTo(150, 80);
+    ctx2D.lineTo(110, 80);
+    ctx2D.stroke();
+    ctx2D.closePath();
+    
+    ctx2D.beginPath();
+    ctx2D.arc(110, 40, 40, 0, 2 * Math.PI);
+    ctx2D.stroke();
+    ctx2D.closePath();
+
+  </script>
+
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (!ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+    
+    ctx2D.setLineDash([]);
+    // arcTo(x1,y1,x2,y2,r)绘制圆弧arcTo(x坐标1,y坐标1, x坐标2,y坐标2, 半径)
+    ctx2D.beginPath();
+    // 先有设置起始点为
+    ctx2D.moveTo(300, 100); // 第一个点
+    ctx2D.arcTo(300, 200, 200, 100, 40); // 圆弧，通过三个点，来确定圆弧弧度
+    ctx2D.stroke();
+    ctx2D.closePath();
+
+    // 先有设置起始点为
+    ctx2D.fillStyle='rgba(255,0,0,0.8)';
+    ctx2D.fillRect(300, 100, 10, 10);
+
+    ctx2D.fillStyle='rgba(255,255,0,0.8)';
+    ctx2D.fillRect(300, 200, 10, 10);
+
+    ctx2D.fillRect(200, 100, 10, 10);
+
+    // 画虚线setLineDash([]); 传入一个数组
+    ctx2D.setLineDash([5,5]);
+    ctx2D.beginPath();
+    ctx2D.moveTo(300, 100); // 第一个点
+    ctx2D.lineTo(300, 200,);
+    ctx2D.lineTo(200, 100);
+    ctx2D.stroke();
+    ctx2D.closePath();
+    
+    ctx2D.beginPath();
+    ctx2D.arc(260, 103, 40, 0, 2 * Math.PI);
+    ctx2D.stroke();
+    ctx2D.closePath();
+  </script>
+</body>
+</html>

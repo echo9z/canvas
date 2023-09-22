@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="cav" width="600" height="400" >
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (!ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+
+    // 绘制贝塞尔曲线
+    // ctx.quadraticCurveTo(控制x,控制y,半径, 结束点x，结束点y)
+    ctx2D.beginPath();
+    ctx2D.moveTo(200, 150); // 起始点
+    
+    ctx2D.quadraticCurveTo(250, 50, 350, 150);
+    ctx2D.strokeStyle='red';
+    
+    ctx2D.stroke();
+    ctx2D.closePath();
+
+    ctx2D.beginPath();
+    ctx2D.fillStyle='rgba(255, 255, 0, 0.8)';
+    ctx2D.arc(200, 150, 5, 0, Math.PI * 2); // 起始点
+
+    ctx2D.moveTo(350, 150);
+    ctx2D.arc(350, 150, 5, 0, Math.PI * 2); // 终点
+    ctx2D.fill();
+    ctx2D.closePath();
+
+    // 控制点
+    ctx2D.beginPath();
+    ctx2D.arc(250, 50, 5, 0, Math.PI * 2);
+    ctx2D.fillStyle='rgba(255, 0, 0, 0.8)';
+    ctx2D.fill();
+    ctx2D.closePath();
+
+    // 三个点连线
+    ctx2D.beginPath();
+    ctx2D.setLineDash([3,3]);
+    ctx2D.strokeStyle='gray';
+    ctx2D.moveTo(200, 150); 
+    ctx2D.lineTo(250, 50);
+    ctx2D.lineTo(350, 150);
+    ctx2D.stroke();
+    ctx2D.closePath();
+
+    // 切线
+    ctx2D.beginPath();
+    ctx2D.setLineDash([]);
+    ctx2D.strokeStyle='green';
+    ctx2D.moveTo(215, 120); 
+    ctx2D.lineTo(280, 80);
+    ctx2D.stroke();
+  </script>
+</body>
+</html>

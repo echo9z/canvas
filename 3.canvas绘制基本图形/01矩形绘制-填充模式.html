@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <canvas id="cav" width="150" height="150" style="border: 1px dashed;">
+    </canvas>
+  </div>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("cav")
+    // 2.获取画布的 2D 渲染上下文
+    var ctx2D = cav.getContext('2d'); 
+    if (ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
+    
+    // 3.绘制图形 fill英文单词是满足 填充
+    // 3.1 绘制矩形 fillRect(x, y, width, height) fillRect填充模糊
+    // fillStyle 属性让长方形变成绿色
+    // fillRect() 方法将它的左上角放在 (x:50, y:50)，把它的大小设置成宽 50 高 50
+    ctx2D.fillStyle='rgba(67,142,219, 1)';
+    ctx2D.fillRect(50, 50, 50, 50)
+    
+    // 拆分写法
+    ctx2D.fillStyle='rgba(255,0,0, 1)';
+    ctx2D.rect(100, 100, 50, 50)
+    ctx2D.fill()
+  </script>
+</body>
+</html>
