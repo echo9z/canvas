@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="cav" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 设置线条末端样式
+      var lineJoin = ['round', 'bevel', 'miter'];
+      lineJoin.forEach((lineCap, i) => {
+        ctx2D.lineWidth = 20;
+        ctx2D.lineJoin = lineCap;
+        ctx2D.beginPath();
+        ctx2D.moveTo(100, 50 + i * 50);
+        ctx2D.lineTo(150, 100 + i * 50);
+
+        ctx2D.lineTo(200, 50 + i * 50);
+        ctx2D.lineTo(250, 100 + i * 50);
+        ctx2D.lineTo(300, 50 + i * 50);
+
+        ctx2D.stroke();
+      });
+
+    </script>
+  </body>
+</html>

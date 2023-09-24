@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="cav" width="600" height="200">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <div>
+      <p>在输入框中输入miterlimit值，点击查看效果</p>
+      miterlimit<input type="text" id="ipt" /> <button id="btn">重绘</button>
+    </div>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+
+      document.getElementById('btn').addEventListener('click', () => {
+        // 清空画布
+        ctx2D.clearRect(0, 0, 150, 150);
+        var iptValue = document.getElementById("ipt").value;
+        if (iptValue.match(/\d+(\.\d+)?/)) {
+          ctx2D.miterLimit = parseFloat(iptValue || 10); // 设置miterLimit值
+          renderLine()
+        } else
+          console.log('Value must be a positive number');
+      })
+
+      function renderLine() {
+        // 绘制参考线
+        ctx2D.strokeStyle = "#09f";
+        ctx2D.lineWidth = 2;
+        ctx2D.strokeRect(5, 50, 160, 50);
+  
+        ctx2D.strokeStyle='rgb(0, 145, 255)'
+        ctx2D.lineWidth = 5
+
+        var path2D = new Path2D()
+        path2D.moveTo(0, 100);
+        for (let i = 0; i < 24; i++) {
+          var dy = i % 2 == 0 ? 25 : -25; // 如果整除则lineto点位，向下+25，向上-25
+          path2D.lineTo(Math.pow(i, 1.5), 75 + dy);
+        }
+        ctx2D.stroke(path2D)
+      }
+      renderLine()
+    </script>
+  </body>
+</html>

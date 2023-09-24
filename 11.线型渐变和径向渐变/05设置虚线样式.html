@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="200">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      ctx.setLineDash([10, 16]);
+
+      // Dashed line with no offset
+      ctx.beginPath();
+      ctx.moveTo(0, 50);
+      ctx.lineTo(300, 50);
+      ctx.stroke();
+
+      // Dashed line with offset of 4
+      ctx.beginPath();
+      ctx.strokeStyle = "red";
+      ctx.lineDashOffset = 10;
+      ctx.moveTo(0, 100);
+      ctx.lineTo(300, 100);
+      ctx.stroke();
+
+    </script>
+  </body>
+</html>

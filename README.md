@@ -969,3 +969,245 @@ rgba() 可以分别设置轮廓和填充样式，因而具有更好的可操作�
 ```
 
 ![](./assets/iShot_2023-09-24_16.43.47.png)
+
+## 线型 Line styles
+
+通过一系列属性来设置线的样式
+
+#### lineWidth 属性
+
+lineWidth：设置线条宽度
+
+```js
+      var pathLine = new Path2D();
+      pathLine.moveTo(150, 100)
+      pathLine.lineTo(250, 100);
+      ctx2D.lineWidth= 8; // 线条的宽度
+      
+      ctx2D.stroke(pathLine)
+      
+      for (var i = 0; i < 6; i++) {
+        var path2D = new Path2D();
+        ctx2D.lineWidth = 1+i;
+        path2D.moveTo(5+i*14, 5); // 起点
+        path2D.lineTo(5+i*14, 65);
+        ctx2D.stroke(path2D)
+      }
+```
+
+![](./assets/iShot_2023-09-24_17.40.00.png)
+
+#### lineCap 属性
+
+lineCap：设置线条末端样式 `butt | round | square`默认是 butt。
+
+```js
+      // 设置线条末端样式
+      var lineCaps = ["butt", "round", "square"]
+      lineCaps.forEach((lineCap, i) => {
+        ctx2D.lineWidth = 15;
+        ctx2D.lineCap = lineCap;
+        ctx2D.beginPath();
+        ctx2D.moveTo(50 + i * 50, 10);
+        ctx2D.lineTo(50 + i * 50, 140);
+        ctx2D.stroke();
+      });
+```
+
+![](./assets/iShot_2023-09-24_17.45.22.png)
+
+#### lineJoin 属性
+
+lineJoin 的属性值决定了图形中两线段连接处所显示的样子。有 3 个值： `round`, `bevel` and `miter`。默认值是 `miter`
+
+- `round`：通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。圆角的半径是线段的宽度。
+
+- `bevel`：在相连部分的末端填充一个额外的以三角形为底的区域，每个部分都有各自独立的矩形拐角。
+
+- `miter`：通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。这个设置可以通过 [`miterLimit`](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/miterLimit "miterLimit") 属性看到效果。
+
+```js
+      // 设置线条末端样式
+      var lineJoin = ['round', 'bevel', 'miter'];
+      lineJoin.forEach((lineCap, i) => {
+        ctx2D.lineWidth = 20;
+        ctx2D.lineJoin = lineCap;
+        ctx2D.beginPath();
+        ctx2D.moveTo(100, 50 + i * 50);
+        ctx2D.lineTo(150, 100 + i * 50);
+
+        ctx2D.lineTo(200, 50 + i * 50);
+        ctx2D.lineTo(250, 100 + i * 50);
+        ctx2D.lineTo(300, 50 + i * 50);
+
+        ctx2D.stroke();
+      });
+```
+
+![](./assets/iShot_2023-09-24_18.45.48.png)
+
+#### miterLimit 属性
+
+miterLimit：限制当两条线相交时交接处最大长度；所谓交接处长度（斜接长度）是指线条交接处内角顶点
+
+![](./assets/1667192776029-37cc94ac-d0b6-4fd1-b771-e164cb2ad533.png)
+
+外侧线段的边缘延时虚线交汇于一点上。线段之间夹角比较大时，交点离绿色线段越近；但随着夹角变小，交点距离会呈指数级增大，离绿色线段越远。
+
+    miterLimit 属性就是用来设定外延交点与连接点的最大距离，如果交点距离大于此值，连接效果会变成了 bevel。
+
+    注意，最大斜接长度（即交点距离）是当前坐标系测量线宽与此miterLimit属性值（HTML canvas默认为 10.0）的乘积，所以miterLimit可以单独设置，不受显示比例改变或任何仿射变换的影响：它只影响线条边缘的有效绘制形状。
+
+    更准确的说，斜接限定值（miterLimit）是延伸长度（在 HTML Canvas 中，这个值是线段外连接点与路径中指定的点之间的距离）与一半线宽的最大允许比值。它也可以被等效定义为线条内外连接点距离（miterLength）与线宽（lineWidth）的最大允许比值（因为路径点是内外连接点的中点）。这等同于相交线段最小内夹角（*θ*）的一半的余割值，小于此角度的斜接将不会被渲染，而仅渲染斜边连接：
+
+![](./assets/iShot_2023-09-24_19.23.18.png)
+
+路径path, 沿着路径描了一条宽度为 width 的边, miterLimit 代表的是, 比例 ab/ac, 其中ac的长度为 1/2 width
+
+- miterLimit = **max** miterLength / lineWidth = 1 / **sin** ( **min** *θ* / 2 )
+- 斜接限定值默认为 10.0，这将会去除所有小于大约 11 度的斜接。
+- 斜接限定值为 √2 ≈ 1.4142136（四舍五入）时，将去除所有锐角的斜接，仅保留钝角或直角。
+- 1.0 是合法的斜接限定值，但这会去除所有斜接。
+- 小于 1.0 的值不是合法的斜接限定值。
+
+```html
+    <canvas id="cav" width="600" height="200">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <div>
+      <p>在输入框中输入miterlimit值，点击查看效果</p>
+      miterlimit<input type="text" id="ipt" /> <button id="btn">重绘</button>
+    </div>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+
+      document.getElementById('btn').addEventListener('click', () => {
+        // 清空画布
+        ctx2D.clearRect(0, 0, 150, 150);
+        var iptValue = document.getElementById("ipt").value;
+        if (iptValue.match(/\d+(\.\d+)?/)) {
+          ctx2D.miterLimit = parseFloat(iptValue || 10); // 设置miterLimit值
+          renderLine()
+        } else
+          console.log('Value must be a positive number');
+      })
+
+      function renderLine() {
+        // 绘制参考线
+        ctx2D.strokeStyle = "#09f";
+        ctx2D.lineWidth = 2;
+        ctx2D.strokeRect(5, 50, 160, 50);
+  
+        ctx2D.strokeStyle='rgb(0, 145, 255)'
+        ctx2D.lineWidth = 5
+
+        var path2D = new Path2D()
+        path2D.moveTo(0, 100);
+        for (let i = 0; i < 24; i++) {
+          var dy = i % 2 == 0 ? 25 : -25; // 如果整除则lineto点位，向下+25，向上-25
+          path2D.lineTo(Math.pow(i, 1.5), 75 + dy);
+        }
+        ctx2D.stroke(path2D)
+      }
+      renderLine()
+    </script>
+```
+
+![](./assets/2023-09-25%2004.11.23.gif)
+
+```html
+    <canvas id="canvas" width="400" height="200">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      ctx.setLineDash([4, 16]);
+
+      // Dashed line with no offset
+      ctx.beginPath();
+      ctx.moveTo(0, 50);
+      ctx.lineTo(300, 50);
+      ctx.stroke();
+
+      // Dashed line with offset of 4
+      ctx.beginPath();
+      ctx.strokeStyle = "red";
+      ctx.lineDashOffset = 4;
+      ctx.moveTo(0, 100);
+      ctx.lineTo(300, 100);
+      ctx.stroke();
+    </script>
+```
+
+## 虚线样式
+
+lineDash的值是一个数组类型，这个值是绘制的虚线重复的最小单位；开始画重点
+（1）数组中元素个数是奇数的话，数组会默认把组内元素复制一份。
+（2）数组中下标是奇数的元素是虚线小段的尺寸，下标是偶数的元素则是虚线小段之间的间距
+下边举例说明：
+
+- “lineDash:[6]” === “lineDash:[6,6]” //释义第一个"6"是虚线小段的长度，第二个"6"是虚线的间隔
+
+- “lineDash:[1,2,3,4]” // 释义 "1"是第一段虚线长度，"2"紧跟着的间隔，"3"是第二段虚线的长度，"4"是第二段虚线后边的间隔
+
+lineDashOffset：
+    lineDashOffset就是虚线的偏移，注意整体虚线位置不偏移，偏移的是虚线小段的位置，但是间隔不变，这么说吧，就是设置了这个属性，有可能第一个虚线小段就看不见了或者不是在开始位置，默认是是0。
+
+```js
+      ctx.setLineDash([10, 16]);
+
+      // Dashed line with no offset
+      ctx.beginPath();
+      ctx.moveTo(0, 50);
+      ctx.lineTo(300, 50);
+      ctx.stroke();
+
+      // Dashed line with offset of 4
+      ctx.beginPath();
+      ctx.strokeStyle = "red";
+      ctx.lineDashOffset = 10;
+      ctx.moveTo(0, 100);
+      ctx.lineTo(300, 100);
+      ctx.stroke();
+```
+
+![](./assets/iShot_2023-09-25_04.25.19.png)
+
+跑马灯效果
+
+```js
+var ctx = document.getElementById('canvas').getContext('2d');
+var offset = 0;
+
+function draw() {
+  ctx.clearRect(0,0, canvas.width, canvas.height);
+  ctx.setLineDash([4, 2]);
+  ctx.lineDashOffset = -offset;
+  ctx.strokeRect(10,10, 100, 100);
+}
+
+function march() {
+  offset++;
+  if (offset > 16) {
+    offset = 0;
+  }
+  draw();
+  setTimeout(march, 20);
+}
+
+march();
+```
+
+![](./assets/2023-09-25%2004.26.59.gif)
