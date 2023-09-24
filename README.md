@@ -467,7 +467,7 @@ ctx.arcTo(x1, y1, x2, y2, radius);
     // 2.获取画布的 2D 渲染上下文
     var ctx2D = cav.getContext('2d'); 
     if (!ctx2D.getContext) cav.innerText = '当前浏览器不支持canvas，请下载最新浏览器'
-    
+
     ctx2D.setLineDash([]);
     // arcTo(x1,y1,x2,y2,r)绘制圆弧arcTo(x坐标1,y坐标1, x坐标2,y坐标2, 半径)
     ctx2D.beginPath();
@@ -494,7 +494,7 @@ ctx.arcTo(x1, y1, x2, y2, radius);
     ctx2D.lineTo(200, 100);
     ctx2D.stroke();
     ctx2D.closePath();
-    
+
     ctx2D.beginPath();
     ctx2D.arc(260, 103, 40, 0, 2 * Math.PI);
     ctx2D.stroke();
@@ -545,7 +545,7 @@ P0 到 P1 运行运动轨迹点（时间0.10到1.00），与P1到P2运行运动�
     ctx2D.moveTo(200, 150); // 起始点
     ctx2D.quadraticCurveTo(250, 50, 350, 150);
     ctx2D.strokeStyle='red';
-    
+
     ctx2D.stroke();
     ctx2D.closePath();
 
@@ -608,13 +608,11 @@ P0 到 P1 运行运动轨迹点（时间0.10到1.00），与P1到P2运行运动�
     ctx2D.quadraticCurveTo(260, 220, 260, 200);
     ctx2D.quadraticCurveTo(200, 200, 200, 150);
     ctx2D.strokeStyle='red';
-    
+
     ctx2D.stroke();
     ctx2D.closePath();
   </script>
 ```
-
-
 
 ### 三次贝塞尔曲线
 
@@ -649,10 +647,10 @@ Q0 与 Q1 之间的连线，Q1 与 Q2之间的连线，形成R0 与 R1
     // ctx.quadraticCurveTo(控制x,控制y,半径, 结束点x，结束点y)
     ctx2D.beginPath();
     ctx2D.moveTo(200, 150); // 起始点
-    
+
     ctx2D.bezierCurveTo(350, 50, 470, 70, 450, 150);
     ctx2D.strokeStyle='red';
-    
+
     ctx2D.stroke();
     ctx2D.closePath();
 
@@ -813,10 +811,161 @@ ctx.stroke(path2);
 
 ![](assets/iShot_2023-09-23_04.04.35.png)
 
-Path2D 选择 [SVG path](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths) 数据构成的字符串
+### 使用 SVG paths
+
+新的 Path2D API 有另一个强大的特点，就是使用 SVG path data 来初始化 canvas 上的路径。这将使你获取路径时可以以 SVG 或 canvas 的方式来重用它们。
+
+这条路径将先移动到点 (M10 10) 然后再水平移动 80 个单位(h 80)，然后下移 80 个单位 (v 80)，接着左移 80 个单位 (h -80)，再回到起点处 (z)。
 
 ```js
       // M10 10移动到moveTo(x,y) h水平移到80位置 v垂直移动到80 h水平移到-80 z回到启点
       var svg2D = new Path2D('M10 10 h 80 v 80 h -80 z'); 
       ctx2D.stroke(svg2D)
 ```
+
+## 图形色彩 Colors
+
+想要给图形上色，有两个重要的属性可以做到：fillStyle 和 strokeStyle。
+
+设置填充的颜色：`ctx2D.fillStyle='rgba(0, 0, 255, 0.5)';`
+
+设置描边的颜色：`ctx2D.strokeStyle='rgba(255, 255, 0, 1)';`
+
+默认情况下，线条和填充颜色都是黑色（CSS 颜色值 #000000）
+
+如果你要给每个图形上不同的颜色，你需要重新设置 fillStyle 或 strokeStyle 的值。
+
+```js
+// fillStyle 的值均为 '橙色'
+ctx.fillStyle = "orange";
+ctx.fillStyle = "#FFA500";
+ctx.fillStyle = "rgb(255,165,0)";
+ctx.fillStyle = "rgba(255,165,0,1)";
+```
+
+### fillStyle示例
+
+两个变量 i 和 j 来为每一个方格产生唯一的 RGB 色彩值，其中仅修改红色和绿色通道的值，而保持蓝色通道的值不变。通过修改这些颜色通道的值来产生各种各样的色板。
+
+```html
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 有了 Path2D 来封装路径，专门用于绘制路径
+      for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 6; j++) {
+          var path2D = new Path2D();
+          // ctx2D.beginPath();
+          path2D.rect(j*25, i*25, 25, 25) // j：0到6，先沿着x轴进行水平渲染,一行6个方块，一共6排
+          ctx2D.fillStyle=`rgb(${Math.floor(255-42.5*i)},${Math.floor(255-42.5*j)},0)`;
+          ctx2D.fill(path2D)
+          // ctx2D.fill()
+          // ctx2D.closePath();
+        }
+      }
+    </script>
+```
+
+![](./assets/iShot_2023-09-24_03.09.17.png)
+
+### strokeStyle示例
+
+示例与上面的有点类似，但这次用到的是 strokeStyle 属性，画的不是方格，而是用 arc 方法来画圆。
+
+```html
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      // 有了 Path2D 来封装路径，专门用于绘制路径
+      for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 6; j++) {
+          var path2D = new Path2D();
+          ctx2D.lineWidth = 1+i; // 设置描边粗细
+          // ctx2D.beginPath();
+          path2D.arc(12.5+j*25,12.5+i*25,10,0,Math.PI*2,true) // j：0到6，先沿着x轴进行水平渲染,一行6个方块，一共6排
+          ctx2D.strokeStyle=`rgb(${Math.floor(255-42.5*i)},${Math.floor(255-42.5*j)},0)`;
+          ctx2D.stroke(path2D)
+          // ctx2D.fill()
+          // ctx2D.closePath();
+        }
+      }
+    </script>
+```
+
+![](./assets/iShot_2023-09-24_03.54.23.png)
+
+### globalAlpha示例
+
+例子里，将用四色格作为背景。设置 globalAlpha 为 0.2 后，后面所有绘制的圆递增的半透明圆，最终结果是一个径向渐变效果。
+
+```js
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      ctx2D.fillStyle = '#F30';
+      ctx2D.fillRect(0,0,75,75);
+      ctx2D.fillStyle = '#6C0';
+      ctx2D.fillRect(75,0,75,75);
+      ctx2D.fillStyle = '#09F';
+      ctx2D.fillRect(0,75,75,75);
+      ctx2D.fillStyle = '#FD0';
+      ctx2D.fillRect(75,75,75,75);
+
+      ctx2D.fillStyle = '#FFF';
+      // 设置透明度值
+      ctx2D.globalAlpha = 0.2; // 设置下面绘制所有圆的透明度
+      // 画半透明圆
+      for (var i=0;i<7;i++){
+        ctx2D.beginPath();
+        ctx2D.arc(75,75,10+10*i,0,Math.PI*2,true);
+        ctx2D.fill();
+      }
+```
+
+![](./assets/iShot_2023-09-24_15.55.35.png)
+
+### rgba()示例
+
+rgba() 可以分别设置轮廓和填充样式，因而具有更好的可操作性和使用灵活性。
+
+```js
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      ctx2D.fillStyle = '#F30';
+      ctx2D.fillRect(0,0,150,37.5);
+      ctx2D.fillStyle = '#6C0';
+      ctx2D.fillRect(0,37.5,150,37.5);
+      ctx2D.fillStyle = '#09F';
+      ctx2D.fillRect(0,75,150,37.5);
+      ctx2D.fillStyle = '#FD0';
+      ctx2D.fillRect(0,112.5,150,37.5);
+
+      // 向下垂直渲染 14*27.5 小方块矩形
+      for (let i = 0; i < 10; i++) {
+        ctx2D.fillStyle = `rgb(255,255,255, ${(1+i)/10})` // 透明度由0.1到1
+        for (let j = 0; j < 4; j++) {
+          ctx2D.fillRect(5 + 14*i, 5 + 37.5*j, 14, 27.5); // 14=150/10-5*2 37.5-5*2
+        }
+      }
+```
+
+![](./assets/iShot_2023-09-24_16.43.47.png)

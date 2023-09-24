@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="cav" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      ctx2D.fillStyle = '#F30';
+      ctx2D.fillRect(0,0,150,37.5);
+      ctx2D.fillStyle = '#6C0';
+      ctx2D.fillRect(0,37.5,150,37.5);
+      ctx2D.fillStyle = '#09F';
+      ctx2D.fillRect(0,75,150,37.5);
+      ctx2D.fillStyle = '#FD0';
+      ctx2D.fillRect(0,112.5,150,37.5);
+
+      // 向下垂直渲染 14*27.5 小方块矩形
+      for (let i = 0; i < 10; i++) {
+        ctx2D.fillStyle = `rgb(255,255,255, ${(1+i)/10})` // 透明度由0.1到1
+        for (let j = 0; j < 4; j++) {
+          ctx2D.fillRect(5 + 14*i, 5 + 37.5*j, 14, 27.5); // 14=150/10-5*2 37.5-5*2
+        }
+      }
+    </script>
+  </body>
+</html>

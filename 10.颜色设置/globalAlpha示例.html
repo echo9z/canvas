@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="cav" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+
+    <script>
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      ctx2D.fillStyle = '#F30';
+      ctx2D.fillRect(0,0,75,75);
+      ctx2D.fillStyle = '#6C0';
+      ctx2D.fillRect(75,0,75,75);
+      ctx2D.fillStyle = '#09F';
+      ctx2D.fillRect(0,75,75,75);
+      ctx2D.fillStyle = '#FD0';
+      ctx2D.fillRect(75,75,75,75);
+
+      ctx2D.fillStyle = '#FFF';
+      // 设置透明度值
+      ctx2D.globalAlpha = 0.2; // 设置下面绘制所有圆的透明度
+      // 画半透明圆
+      for (var i=0;i<7;i++){
+        ctx2D.beginPath();
+        ctx2D.arc(75,75,10+10*i,0,Math.PI*2,true);
+        ctx2D.fill();
+      }
+
+    </script>
+  </body>
+</html>
