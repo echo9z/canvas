@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="400" height="200">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      // 通过 createLinearGradient(x1,y1渐变点1, x2,y2渐变点2)
+      // var lineargradient = ctx.createLinearGradient(50, 50, 150, 150); // 线性渐变
+      // var lineargradient = ctx.createLinearGradient(50, 100, 150, 100); // 线性渐变
+      
+      // 线性渐变0 到 1
+      // lineargradient.addColorStop(0, 'red');
+      // lineargradient.addColorStop(0.5, 'pink');
+      // lineargradient.addColorStop(1, 'blue');
+      
+      // // 将线性渐变赋值fillStyle
+      // ctx.fillStyle = lineargradient
+      // ctx.fillRect(50, 50, 100, 100);
+
+      let move = 0
+      function renderLinearGradient() {
+        ctx.clearRect(0, 0, 400, 200)
+        move += 0.01
+        if(move > 1) move = 0
+        var lineargradient = ctx.createLinearGradient(50, 50, 150, 150); 
+        // 线性渐变0 到 1
+
+        lineargradient.addColorStop(0 , 'red');
+        lineargradient.addColorStop(move , 'pink');
+        lineargradient.addColorStop(1, 'blue');
+        
+        // 将线性渐变赋值fillStyle
+        ctx.fillStyle = lineargradient
+        ctx.fillRect(50, 50, 100, 100);
+        requestAnimationFrame(renderLinearGradient)
+      }
+
+      // requestAnimationFrame告诉浏览器，你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。
+      requestAnimationFrame(renderLinearGradient)
+    </script>
+  </body>
+</html>

@@ -983,9 +983,9 @@ lineWidth：设置线条宽度
       pathLine.moveTo(150, 100)
       pathLine.lineTo(250, 100);
       ctx2D.lineWidth= 8; // 线条的宽度
-      
+
       ctx2D.stroke(pathLine)
-      
+
       for (var i = 0; i < 6; i++) {
         var path2D = new Path2D();
         ctx2D.lineWidth = 1+i;
@@ -1106,7 +1106,7 @@ miterLimit：限制当两条线相交时交接处最大长度；所谓交接处�
         ctx2D.strokeStyle = "#09f";
         ctx2D.lineWidth = 2;
         ctx2D.strokeRect(5, 50, 160, 50);
-  
+
         ctx2D.strokeStyle='rgb(0, 145, 255)'
         ctx2D.lineWidth = 5
 
@@ -1211,3 +1211,109 @@ march();
 ```
 
 ![](./assets/2023-09-25%2004.26.59.gif)
+
+## 渐变 Gradients
+
+线性或者径向的渐变来填充或描边。下面的方法新建一个 canvasGradient 对象，并且赋给图形的 fillStyle 或 strokeStyle 属性
+
+<img src="assets/iShot_2023-09-25_18.24.51.png" title="" alt="" data-align="center">
+
+`createLinearGradient(x1, y1, x2, y2)`
+
+createLinearGradient 方法接受 4 个参数，表示渐变的起点 (x1,y1) 与终点 (x2,y2)。
+
+`createRadialGradient(x1, y1, r1, x2, y2, r2)`
+
+createRadialGradient 方法接受 6 个参数，前三个定义一个以 (x1,y1) 为原点，半径为 r1 的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为 r2 的圆。
+
+```js
+var lineargradient = ctx.createLinearGradient(0,0,150,150);
+var radialgradient = ctx.createRadialGradient(75,75,0,75,75,100);
+```
+
+创建出 canvasGradient 对象后，我们就可以用 addColorStop 方法给它上色了。
+
+`gradient.addColorStop(position, color)`
+
+addColorStop 方法接受 2 个参数，position 参数必须是一个 0.0 与 1.0 之间的数值，表示渐变中颜色所在的相对位置。例如，0.5 表示颜色会出现在正中间。color 参数必须是一个有效的 CSS 颜色值（如 #FFF，rgba(0,0,0,1)，等等）。
+
+你可以根据需要添加任意多个色标（color stops）。下面是最简单的线性黑白渐变的例子。
+
+```js
+var lineargradient = ctx.createLinearGradient(0,0,150,150);
+lineargradient.addColorStop(0,'white');
+lineargradient.addColorStop(1,'black');
+```
+
+### 线性渐变
+
+createLinearGradient 方法接受 4 个参数，表示渐变的起点 (x1,y1) 与终点 (x2,y2)。
+
+```js
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      // 通过 createLinearGradient(x1,y1渐变点1, x2,y2渐变点2)
+      var lineargradient = ctx.createLinearGradient(50, 50, 150, 150); // 线性渐变
+     
+      // 线性渐变0 到 1
+      lineargradient.addColorStop(0, 'red');
+      lineargradient.addColorStop(1, 'blue');
+      
+      // 将线性渐变赋值fillStyle
+      ctx.fillStyle = lineargradient
+      ctx.fillRect(50, 50, 100, 100);
+```
+
+![](assets/iShot_2023-09-25_16.13.35.png)
+
+过渡效果
+
+```js
+      let move = 0
+      function renderLinearGradient() {
+        ctx.clearRect(0, 0, 400, 200)
+        move += 0.01
+        if(move > 1) move = 0
+        var lineargradient = ctx.createLinearGradient(50, 50, 150, 150); 
+        // 线性渐变0 到 1
+
+        lineargradient.addColorStop(0 , 'red');
+        lineargradient.addColorStop(move , 'pink');
+        lineargradient.addColorStop(1, 'blue');
+        
+        // 将线性渐变赋值fillStyle
+        ctx.fillStyle = lineargradient
+        ctx.fillRect(50, 50, 100, 100);
+        console.log(move);
+        requestAnimationFrame(renderLinearGradient)
+      }
+
+      // requestAnimationFrame告诉浏览器，你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。
+      requestAnimationFrame(renderLinearGradient)
+```
+
+![](assets/2023-09-25%2018.11.35.gif)
+
+## 径向渐变
+
+createRadialGradient 方法接受 6 个参数，前三个定义一个以 (x1,y1) 为原点，半径为 r1 的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为 r2 的圆。
+
+- 根据不同的圆心点画圆，进行扩散，径向渐变0 到 1设置不同颜色
+
+```js
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      // 通过 createRadialGradient(x1,y1渐变点1, x2,y2渐变点2)
+      var linearRadialGradient = ctx.createRadialGradient(125, 125, 10, 125, 125, 70); // 径向渐变
+      
+      // 径向渐变0 到 1
+      linearRadialGradient.addColorStop(0, 'red');
+      linearRadialGradient.addColorStop(0.3, 'pink');
+      linearRadialGradient.addColorStop(1, 'blue');
+      
+      // 将径向渐变赋值fillStyle
+      ctx.fillStyle = linearRadialGradient
+      ctx.fillRect(50, 50, 150, 150);
+```
+
+![](assets/iShot_2023-09-25_19.03.17.png)
