@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="500">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    ctx.fillStyle='green';
+    
+    ctx.font = '45px Times New Roman '
+    // 设置文字在 画布上的位置fillText('text', x, y, 文字最大宽度): 最大宽度100
+    // ctx.fillText('Hello!', 50, 60, 100);
+    ctx.fillText('Hello!', 50, 60);
+
+    ctx.strokeStyle='red';
+    ctx.strokeText('Hello!', 50, 120);
+    
+  </script>
+</body>
+</html>

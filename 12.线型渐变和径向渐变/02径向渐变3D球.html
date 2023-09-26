@@ -14,17 +14,17 @@
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       // 通过 createRadialGradient(x1,y1渐变点1,r1, x2,y2渐变点2,r2)
-      var linearRadialGradient = ctx.createRadialGradient(125, 125, 10, 125, 125, 70); // 径向渐变
+      var linearRadialGradient = ctx.createRadialGradient(50,35,18, 62,50,50); // 径向渐变
       
       // 线性渐变0 到 1
-      linearRadialGradient.addColorStop(0, 'red');
-      linearRadialGradient.addColorStop(0.3, 'pink');
-      linearRadialGradient.addColorStop(1, 'blue');
+      linearRadialGradient.addColorStop(0, '#A7D30C');
+      linearRadialGradient.addColorStop(0.9, '#019F62');
+      linearRadialGradient.addColorStop(1, 'rgba(1,159,98,0)');
       
       // 将径向渐变赋值fillStyle
       ctx.fillStyle = linearRadialGradient
-      ctx.fillRect(50, 50, 150, 150);
-
+      ctx.fillRect(0, 0, 150, 150);
+      // Red, orange, yellow, green, cyan, blue, purple
     </script>
   </body>
 </html>

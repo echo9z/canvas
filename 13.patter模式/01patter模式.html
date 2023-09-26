@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="400" height="200">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <canvas id="cav2" width="50" height="50">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // var cav2 = document.getElementById("cav2");
+    // var ctx2 = cav2.getContext("2d");
+    // ctx2.fillStyle = 'green'
+    // ctx2.fillRect(0, 0, 50, 50);
+
+    // var patter = ctx.createPattern(cav2, 'repeat-x');
+    // ctx.fillStyle = patter
+    // ctx.fillRect(0, 0, 160, 160);
+
+    // 创建一个图片对象
+    var img = new Image();
+    img.src = '../assets/img/33.png'
+    
+    img.onload = function() {
+      // 创建一个图案对象，createPattern(图片对象)
+      var patter = ctx.createPattern(img, 'repeat');
+      // var patter = ctx.createPattern(img, 'repeat-x');
+      // var patter = ctx.createPattern(img, 'repeat-y');
+      ctx.fillStyle = patter
+      ctx.fillRect(0, 0, 160, 160);
+    }
+
+  </script>
+</body>
+</html>

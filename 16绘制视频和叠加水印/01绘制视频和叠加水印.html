@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="350" height="160">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <video src="../assets/video/medium.mp4" controls hidden ></video>
+  <button id="btn">play/stop</button>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 创建音频对象
+    var video = document.querySelector("video") 
+    var btn = document.querySelector("#btn") 
+    btn.onclick = function() {
+      if (video.paused) { // 是否在播放状态
+        video.play()
+        render()
+      } else {
+        video.pause()
+      }
+    }
+
+    // 添加一个logo 在canvas画布上
+    var img = new Image();
+    img.src = '../assets/img/33.png' 
+
+    // 将视频在画布上展示
+    function render(){
+      ctx.drawImage(video, 0, 0, 333, 154);
+      ctx.drawImage(img, 280, 100, 33, 33); // 类似在视频上添加水印效果
+      // 通过动画函数
+      requestAnimationFrame(render)
+    }
+  </script>
+</body>
+</html>

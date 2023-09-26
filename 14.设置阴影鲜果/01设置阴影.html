@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="400" height="300">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    var path2D = new Path2D();
+    path2D.moveTo(100, 50);
+    path2D.lineTo(125, 100)
+    path2D.lineTo(180, 125)
+    path2D.lineTo(125, 150)
+    path2D.lineTo(100, 200)
+    path2D.lineTo(75, 150)
+    path2D.lineTo(25, 125)
+    path2D.lineTo(75, 100)
+    path2D.lineTo(100, 50)
+
+    ctx.shadowColor='gray';
+    ctx.shadowOffsetX = 10; // 阴影x轴距离
+    ctx.shadowOffsetY = 5; // 阴影y轴距离
+    ctx.shadowBlur = 10; // 阴影模糊度
+    ctx.stroke(path2D);
+
+    ctx.font = "20px Times New Roman";
+    ctx.fillStyle = "Black";
+    ctx.fillText("Sample String", 5, 30);
+    
+  </script>
+</body>
+</html>

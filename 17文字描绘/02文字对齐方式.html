@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="400">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 设置文本基线
+    const baselines = [
+      "top",
+      "hanging",
+      "middle",
+      "alphabetic",
+      "ideographic",
+      "bottom",
+    ];
+    var path2D = new Path2D()
+    ctx.strokeStyle='red';
+    ctx.fillStyle='black'
+    ctx.font = '24px Times New Roman'
+    baselines.map((baseline, idx) => {
+      const y = 50 + 50 * idx
+      path2D.moveTo(50, y)
+      path2D.lineTo(250, y)
+      // 通过textBaseline 属性设置文件的基线，默认值是 alphabetic。
+      ctx.textBaseline = baseline
+      ctx.fillText(`Hello afgl (${baseline})`, 50, y)
+      ctx.stroke(path2D)
+    })
+
+    ctx.moveTo(400, 0)
+    ctx.lineTo(400, 400)
+    ctx.stroke()
+    // 设置文字对象方式 默认值是 start
+    const textAligns = ["left", "right", "center", "start", "end"];
+    var path2DA = new Path2D()
+    textAligns.map((align, index) => {
+      const y = 50 + 50 * index
+      ctx.textAlign = align
+      ctx.fillText(`(${align})`, 400, y) // 以(400,y)为坐标点，文字从左往右
+      ctx.stroke(path2DA)
+    })
+
+    ctx.fillText("Hi!", 550, 50);
+    ctx.direction = "rtl";
+    ctx.fillText("Hi!", 550, 100);
+    ctx.direction = "ltr";
+    ctx.fillText("Hi!", 550, 150);
+
+    // 预测文件的长度
+    var textObj = ctx.measureText("foo hello")
+    console.log(" ~ text width:",textObj, textObj.width)
+
+  </script>
+</body>
+</html>

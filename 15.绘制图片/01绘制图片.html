@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="600">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 获取图片
+    var img = new Image();
+    img.src = '../assets/img/55.png' // 需要等待图片加载
+    img.onload = function() {
+      // ctx.drawImage(图片对象, dX距离画布x, dY距离画布y, dWidth在画布显示宽, dHeight在画布显示高);
+      // 第一种：图片会撑开整个canvas画布，在指定画布位置x,y轴，根据图片大小撑满整个画布
+      ctx.drawImage(img, 50, 50); 
+      // 第二种：在指定画布位置x,y轴，指定图片的宽高
+      // drawImage(image, dx, dy, dWidth, dHeight)
+      ctx.drawImage(img, 50, 50, 600, 320); // dWith,dHeight,将图片设置为600*320大小
+      // 第三种：在指定画布位置x,y轴，指定图片x,y轴，相当于截图图片区域，这个截图要根据原图的大小来确定
+      // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+      ctx.drawImage(img, 10, 0, 720, 600, 50, 50, 160, 120); 
+    }
+  </script>
+</body>
+</html>

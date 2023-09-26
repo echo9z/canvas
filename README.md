@@ -114,13 +114,13 @@ draw() 的函数，当页面加载结束的时候就会执行这个函数
 
 模板中有个宽 150px, 高 150px 的 canvas 元素。如上图所示，canvas 元素默认被网格所覆盖。通常来说网格中的一个单元相当于 canvas 元素中的一像素。栅格的起点为左上角（坐标为（0,0））。所有元素的位置都相对于原点定位。所以图中蓝色方形左上角的坐标为距离左边（X 轴）x 像素，距离上边（Y 轴）y 像素（坐标为（x,y））
 
-## 绘制矩形
+### 绘制矩形
 
 不同于 SVG，canvas 只支持两种形式的图形绘制：矩形和路径（由一系列点连成的线段）
 
 canvas 提供了三种方法绘制矩形：
 
-### 填充矩形 fillRect()
+#### 填充矩形 fillRect()
 
 ```js
 ctx.fillRect(x, y, width, height);
@@ -158,7 +158,7 @@ ctx.fillRect(x, y, width, height);
 
 ![](./assets/iShot_2023-09-18_03.36.22.png)
 
-### 描边矩形 strokeRect()
+#### 描边矩形 strokeRect()
 
 ```js
 ctx.strokeRect(x, y, width, height);
@@ -194,7 +194,7 @@ ctx.strokeRect(x, y, width, height);
 
 ![](./assets/iShot_2023-09-18_03.36.35.png)
 
-### 清除绘制矩形 clearRect()
+#### 清除绘制矩形 clearRect()
 
 `clearRect()` 方法在一个矩形区域内设置所有像素都是透明的 (`rgba(0,0,0,0)`)。这个矩形范围的左上角在 `(x, y)`，宽度和高度分别由 `width` 和`height`确定。
 
@@ -239,7 +239,7 @@ ctx.strokeRect(x, y, width, height);
 
 ![](./assets/2023-09-18%2003.38.58.gif)
 
-### 分段绘制图形 beginPath 和 closePath
+#### 分段绘制图形 beginPath 和 closePath
 
 当画布上有两个不同的图形，一个图形是描边绘制，另一种是填充绘制，就需要分段绘制图形beginPath 和 closePath
 
@@ -279,7 +279,7 @@ ctx.strokeRect(x, y, width, height);
 </body>
 ```
 
-## 绘制圆形
+### 绘制圆形
 
 圆弧路径的圆心在 *(x, y)* 位置，半径为 *r*，根据*anticlockwise* （默认为顺时针）指定的方向从 *startAngle* 开始绘制，到 *endAngle* 结束。
 
@@ -321,7 +321,7 @@ ctx.arc(x轴, y轴, radius半径, startAngle开始角度, endAngle结束角度, 
 
 ![](assets/iShot_2023-09-23_01.49.58.png)
 
-## 绘制路径
+### 绘制路径
 
 图形的基本元素是路径。路径是通过不同颜色和宽度的线段或曲线相连形成的不同形状
 
@@ -340,7 +340,7 @@ fill()：通过填充路径的内容区域生成实心的图形。
 
 moveTo()：新建一个起点，起始点移动到 (x，y) 坐标的方法。
 
-## 绘制直线
+### 绘制直线
 
 `lineTo` 方法画一条直线，使用 [`beginPath()`](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/beginPath "beginPath()") 绘制路径的起始点，使用 `moveTo()`移动画笔，使用 [`stroke()`](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/stroke "stroke()") 方法真正地画线。
 
@@ -354,7 +354,7 @@ ctx.lineTo(150, 100); // Draw a line to (150, 100)
 ctx.stroke(); // Render the path
 ```
 
-## 绘制三角
+### 绘制三角
 
 ```html
     <script>
@@ -401,7 +401,7 @@ ctx.stroke(); // Render the path
 
 <img src="assets/iShot_2023-09-23_01.53.23.png" title="" alt="" data-align="center">
 
-## 移动笔触
+### 移动笔触
 
 一个非常有用的函数，而这个函数实际上并不能画出任何东西，也是上面所描述的路径列表的一部分。通常就是moveTo() 将笔触移动到指定的坐标 x 以及 y 上。
 
@@ -442,7 +442,7 @@ ctx.stroke(); // Render the path
 
 ![](./assets/iShot_2023-09-18_23.21.29.png)
 
-## 绘制圆弧
+### 绘制圆弧
 
 基础点是蓝色的，两个控制点是红色的。
 
@@ -502,13 +502,15 @@ ctx.arcTo(x1, y1, x2, y2, radius);
   </script>
 ```
 
-## 绘制贝塞尔曲线
+### 绘制贝塞尔曲线
 
 贝塞尔曲线(Bézier curve)，又称贝兹曲线或贝济埃曲线，是应用于二维图形应用程序的数学曲线。
 
 一般的矢量图形软件通过它来精确画出曲线，贝兹曲线由线段与节点组成，节点是可拖动的支点，线段像可伸缩的皮筋，我们在绘图工具上看到的钢笔工具就是来做这种矢量曲线的。
 
 比如项ps中的钢笔工具
+
+<img src="./assets/quadraticCurveTo.png" title="" alt="" data-align="center">
 
 ### 一次贝塞尔曲线(线性贝塞尔曲线)
 
@@ -742,7 +744,7 @@ Q0 与 Q1 之间的连线，Q1 与 Q2之间的连线，形成R0 与 R1
 
 ![](assets/iShot_2023-09-23_02.43.03.png)
 
-## Path2D 对象
+### Path2D 对象
 
     在前面例子中看到的，使用一系列的路径和绘画命令来把对象“画”在画布上。为了简化代码和提高性能，Path2D对象已可以在较新版本的浏览器中使用，用来缓存或记录绘画命令，这样你将能快速地回顾路径。
 
@@ -811,7 +813,7 @@ ctx.stroke(path2);
 
 ![](assets/iShot_2023-09-23_04.04.35.png)
 
-### 使用 SVG paths
+#### 使用 SVG paths
 
 新的 Path2D API 有另一个强大的特点，就是使用 SVG path data 来初始化 canvas 上的路径。这将使你获取路径时可以以 SVG 或 canvas 的方式来重用它们。
 
@@ -823,7 +825,9 @@ ctx.stroke(path2);
       ctx2D.stroke(svg2D)
 ```
 
-## 图形色彩 Colors
+## 样式和颜色设置
+
+### 图形色彩 Colors
 
 想要给图形上色，有两个重要的属性可以做到：fillStyle 和 strokeStyle。
 
@@ -970,7 +974,7 @@ rgba() 可以分别设置轮廓和填充样式，因而具有更好的可操作�
 
 ![](./assets/iShot_2023-09-24_16.43.47.png)
 
-## 线型 Line styles
+### 线型 Line styles
 
 通过一系列属性来设置线的样式
 
@@ -1151,7 +1155,7 @@ miterLimit：限制当两条线相交时交接处最大长度；所谓交接处�
     </script>
 ```
 
-## 虚线样式
+### 虚线样式
 
 lineDash的值是一个数组类型，这个值是绘制的虚线重复的最小单位；开始画重点
 （1）数组中元素个数是奇数的话，数组会默认把组内元素复制一份。
@@ -1212,7 +1216,7 @@ march();
 
 ![](./assets/2023-09-25%2004.26.59.gif)
 
-## 渐变 Gradients
+### 渐变 Gradients
 
 线性或者径向的渐变来填充或描边。下面的方法新建一个 canvasGradient 对象，并且赋给图形的 fillStyle 或 strokeStyle 属性
 
@@ -1254,11 +1258,11 @@ createLinearGradient 方法接受 4 个参数，表示渐变的起点 (x1,y1) �
       const ctx = canvas.getContext("2d");
       // 通过 createLinearGradient(x1,y1渐变点1, x2,y2渐变点2)
       var lineargradient = ctx.createLinearGradient(50, 50, 150, 150); // 线性渐变
-     
+
       // 线性渐变0 到 1
       lineargradient.addColorStop(0, 'red');
       lineargradient.addColorStop(1, 'blue');
-      
+
       // 将线性渐变赋值fillStyle
       ctx.fillStyle = lineargradient
       ctx.fillRect(50, 50, 100, 100);
@@ -1280,7 +1284,7 @@ createLinearGradient 方法接受 4 个参数，表示渐变的起点 (x1,y1) �
         lineargradient.addColorStop(0 , 'red');
         lineargradient.addColorStop(move , 'pink');
         lineargradient.addColorStop(1, 'blue');
-        
+
         // 将线性渐变赋值fillStyle
         ctx.fillStyle = lineargradient
         ctx.fillRect(50, 50, 100, 100);
@@ -1294,7 +1298,7 @@ createLinearGradient 方法接受 4 个参数，表示渐变的起点 (x1,y1) �
 
 ![](assets/2023-09-25%2018.11.35.gif)
 
-## 径向渐变
+### 径向渐变
 
 createRadialGradient 方法接受 6 个参数，前三个定义一个以 (x1,y1) 为原点，半径为 r1 的圆，后三个参数则定义另一个以 (x2,y2) 为原点，半径为 r2 的圆。
 
@@ -1305,15 +1309,382 @@ createRadialGradient 方法接受 6 个参数，前三个定义一个以 (x1,y1)
       const ctx = canvas.getContext("2d");
       // 通过 createRadialGradient(x1,y1渐变点1, x2,y2渐变点2)
       var linearRadialGradient = ctx.createRadialGradient(125, 125, 10, 125, 125, 70); // 径向渐变
-      
+
       // 径向渐变0 到 1
       linearRadialGradient.addColorStop(0, 'red');
       linearRadialGradient.addColorStop(0.3, 'pink');
       linearRadialGradient.addColorStop(1, 'blue');
-      
+
       // 将径向渐变赋值fillStyle
       ctx.fillStyle = linearRadialGradient
       ctx.fillRect(50, 50, 150, 150);
 ```
 
 ![](assets/iShot_2023-09-25_19.03.17.png)
+
+径向渐变实现通过圆心点位，通过高光实现3D球
+
+```js
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      // 通过 createRadialGradient(x1,y1渐变点1, x2,y2渐变点2)
+      var linearRadialGradient = ctx.createRadialGradient(50,35,18, 62,50,50); // 径向渐变
+
+      // 线性渐变0 到 1
+      linearRadialGradient.addColorStop(0, '#A7D30C');
+      linearRadialGradient.addColorStop(0.9, '#019F62');
+      linearRadialGradient.addColorStop(1, 'rgba(1,159,98,0)');
+
+      // 将径向渐变赋值fillStyle
+      ctx.fillStyle = linearRadialGrad
+```
+
+![](assets/iShot_2023-09-26_03.24.53.png)
+
+### 圆锥渐变
+
+createConicGradient()：给定坐标的点周围创建渐变。
+
+```js
+createConicGradient(startAngle, x, y)
+```
+
+startAngle：开始渐变的角度（以弧度为单位）。角度从从中心水平方向的直线开始，顺时针方向前进。
+
+```js
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      // 通过 createRadialGradient(startAngle, x, y) startAngle开始角度
+      var gradient = ctx.createConicGradient(Math.PI/6, 75, 75); // (30°, 75,75)
+
+      // 线性渐变0 到 1
+      gradient.addColorStop(0, 'red');
+      gradient.addColorStop(0.2, 'orange');
+      gradient.addColorStop(0.4, 'yellow');
+      gradient.addColorStop(0.5, 'green');
+      gradient.addColorStop(0.7, 'cyan');
+      gradient.addColorStop(0.9, 'blue');
+      gradient.addColorStop(1, 'purple');
+
+      // 将径向渐变赋值fillStyle
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, 150, 150);
+```
+
+![](assets/iShot_2023-09-26_03.41.43.png)
+
+### Patter印章模式
+
+`createPattern()` 方法使用指定的图像和重复创建模式。此方法返回 `CanvasPattern` 。
+
+方法不会直接将任何内容绘制到画布上。必须将其创建的图案指定给 `fillStyle` 或 `strokeStyle` 属性
+
+```js
+createPattern(image, repetition)
+```
+
+**注：** 与 drawImage 有点不同，你需要确认 image 对象已经装载完毕，否则图案可能效果不对
+
+`image`
+
+要用作模式图像的图像。它可以是以下任何一种：
+
+- [`HTMLImageElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement) ([`<img>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img))
+- [`SVGImageElement`](https://developer.mozilla.org/en-US/docs/Web/API/SVGImageElement) ([`<image>`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image))
+- [`HTMLVideoElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement) ([`<video>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video)，通过使用视频的捕获)
+- [`HTMLCanvasElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement) ([`<canvas>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas))
+
+`repetition`
+
+- `"repeat"` (both directions)  `"repeat"` （双向）
+- `"repeat-x"` (horizontal only)  `"repeat-x"` （仅限水平）
+- `"repeat-y"` (vertical only)  `"repeat-y"` （仅限垂直）
+- `"no-repeat"` (neither direction)  `"no-repeat"` （无方向)
+
+填充img图片，也可以填充svg或者canvas对象
+
+```js
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 创建一个图片对象
+    var img = new Image();
+    img.src = '../assets/img/33.png'
+
+    img.onload = function() {
+      // 创建一个图案对象，createPattern(图片对象)
+      // var patter = ctx.createPattern(img, 'repeat');
+      var patter = ctx.createPattern(img, 'repeat-x');
+      // var patter = ctx.createPattern(img, 'repeat-y');
+      ctx.fillStyle = patter
+      ctx.fillRect(0, 0, 160, 160);
+    }
+```
+
+![](./assets/iShot_2023-09-26_16.50.32.png)
+
+### 阴影 Shadows
+
+shadowOffsetX|shadowOffsetY：偏移距离
+
+shadowOffsetX 和 shadowOffsetY 用来设定阴影在 X 和 Y 轴的延伸距离，它们是不受变换矩阵所影响的。负值表示阴影会往上或左延伸，正值则表示会往下或右延伸，它们默认都为 0。
+
+shadowBlur：模糊程度
+
+shadowBlur 用于设定阴影的模糊程度，其数值并不跟像素数量挂钩，也不受变换矩阵的影响，默认为 0。
+
+shadowColor：阴影颜色
+
+shadowColor 是标准的 CSS 颜色值，用于设定阴影颜色效果，默认是全透明的黑色。
+
+```html
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    var path2D = new Path2D();
+    path2D.moveTo(100, 50);
+    path2D.lineTo(125, 100)
+    path2D.lineTo(180, 125)
+    path2D.lineTo(125, 150)
+    path2D.lineTo(100, 200)
+    path2D.lineTo(75, 150)
+    path2D.lineTo(25, 125)
+    path2D.lineTo(75, 100)
+    path2D.lineTo(100, 50)
+
+    ctx.shadowColor='gray';
+    ctx.shadowOffsetX = 10; // 阴影x轴距离
+    ctx.shadowOffsetY = 5; // 阴影y轴距离
+    ctx.shadowBlur = 10; // 阴影模糊度
+    ctx.stroke(path2D);
+
+    ctx.font = "
+  ";
+    ctx.fillStyle = "Black";
+    ctx.fillText("Sample String", 5, 30);
+  </script>
+```
+
+![](./assets/iShot_2023-09-26_17.38.45.png)
+
+## 绘制图像和视频
+
+浏览器支持的任意格式的外部图片都可以使用，比如 PNG、GIF 或者 JPEG。甚至可以将同一个页面中其他 canvas 元素生成的图片作为图片源。
+
+引入图像到 canvas 里需要以下两步基本操作：
+
+1. 获得一个指向HTMLImageElement的对象或者另一个 canvas 元素的引用作为源，也可以通过提供一个 URL 的方式来使用图片
+2. 使用drawImage()函数将图片绘制到画布上
+
+`drawImage()` 方法将图像绘制到画布上的不同方法
+
+```js
+drawImage(image, dx, dy)
+drawImage(image, dx, dy, dWidth, dHeight)
+drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+```
+
+<img title="" src="./assets/canvas_drawimage.jpg" alt="" data-align="center">
+
+```html
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 获取图片
+    var img = new Image();
+    img.src = '../assets/img/55.png' // 需要等待图片加载
+    img.onload = function() {
+      // ctx.drawImage(图片对象, dX距离画布x, dY距离画布y, dWidth在画布显示宽, dHeight在画布显示高);
+      // 第一种：图片会撑开整个canvas画布，在指定画布位置x,y轴，根据图片大小撑满整个画布
+      // ctx.drawImage(img, 50, 50); 
+      // 第二种：在指定画布位置x,y轴，指定图片的宽高
+      // drawImage(image, dx, dy, dWidth, dHeight)
+      // ctx.drawImage(img, 50, 50, 600, 320); // dWith,dHeight,将图片设置为600*320大小
+      // 第三种：在指定画布位置x,y轴，指定图片x,y轴，相当于截图图片区域，这个截图要根据原图的大小来确定
+      // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+      ctx.drawImage(img, 10, 0, 720, 600, 50, 50, 160, 120); 
+    }
+  </script>
+```
+
+裁剪效果：取原图坐标的 (10, 0)点位裁剪，裁剪原图宽度720高度600，在canvas画布上(50,50)位置，渲染宽度是160*120
+
+![](./assets/iShot_2023-09-26_19.49.21.png)
+
+视频绘制
+
+```html
+  <canvas id="canvas" width="400" height="300">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <video src="../assets/video/medium.mp4" controls hidden ></video>
+  <button id="btn">play/stop</button>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 创建音频对象
+    var video = document.querySelector("video") 
+    var btn = document.querySelector("#btn") 
+    btn.onclick = function() {
+      if (video.paused) { // 是否在播放状态
+        video.play()
+        render()
+      } else {
+        video.pause()
+      }
+    }
+
+    // 添加一个logo 在canvas画布上
+    var img = new Image();
+    img.src = '../assets/img/33.png' 
+
+    // 将视频在画布上展示
+    function render(){
+      ctx.drawImage(video, 0, 0, 333, 154);
+      ctx.drawImage(img, 280, 100, 33, 33); // 类似在视频上添加水印效果
+
+      // 通过动画函数
+      requestAnimationFrame(render)
+    }
+  </script>
+```
+
+![](./assets/2023-09-26%2020.42.42.gif)
+
+
+
+## 绘制文本
+
+### fillText与strokeText
+
+canvas 提供了两种方法来渲染文本：
+
+`fillText(text, x, y [, maxWidth])`
+
+在指定的 (x,y) 位置填充指定的文本，绘制的最大宽度是可选的。
+
+`strokeText(text, x, y [, maxWidth])`
+
+在指定的 (x,y) 位置绘制文本边框，绘制的最大宽度是可选的。
+
+```js
+   // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+    ctx.fillStyle='green';
+
+    ctx.font = '24px Times New Roman '
+    // 设置文字在 画布上的位置fillText('text', x, y, 文字最大宽度): 最大宽度100
+    // ctx.fillText('Hello!', 50, 60, 100);
+    ctx.fillText('Hello!', 50, 60);
+  
+    ctx.strokeStyle='red';
+    ctx.strokeText('Hello!', 50, 120);
+```
+
+![](./assets/iShot_2023-09-27_02.12.59.png)
+
+### textAlign
+
+textAlign：文本的对齐方式。可选的值包括：start, end, left, right or center.。默认值是 start。
+
+start：文本对齐界线开始的地方；默认值是 start
+
+end：文本对齐界线结束的地方
+
+```js
+ctx.textAlign = "left" || "right" || "center" || "start" || "end";
+```
+
+```js
+    ctx.moveTo(400, 0)
+    ctx.lineTo(400, 400)
+    ctx.stroke()
+    // 设置文字对象方式 默认值是 start
+    const textAligns = ["left", "right", "center", "start", "end"];
+    var path2DA = new Path2D()
+    textAligns.map((align, index) => {
+      const y = 50 + 50 * index
+      ctx.textAlign = align
+      ctx.fillText(`(${align})`, 400, y) // 以(400,y)为坐标点，文字从左往右
+      ctx.stroke(path2DA)
+    })
+```
+
+![](./assets/iShot_2023-09-27_02.32.08.png)
+
+### textBaseline
+
+基线对齐选项。可选的值包括：top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。
+
+```js
+ctx.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
+```
+
+```js
+    var path2D = new Path2D()
+    ctx.strokeStyle='red';
+    ctx.fillStyle='black'
+    ctx.font = '24px Times New Roman'
+    baselines.map((baseline, idx) => {
+      const y = 100 + 50 * idx
+      path2D.moveTo(100, y)
+      path2D.lineTo(350, y)
+
+      ctx.textBaseline = baseline // 通过textBaseline 属性设置文件的基线
+      ctx.fillText(`Hello afgl (${baseline})`, 100, y)
+      ctx.stroke(path2D)
+    })
+```
+
+![](./assets/iShot_2023-09-27_00.36.47.png)
+
+### direction
+
+设置当前文本方向：ltr, rtl, inherit。默认值是 inherit。
+
+```js
+ctx.direction = "ltr" || "rtl" || "inherit";
+```
+
+- ltr：文本方向从左向右。
+
+- rtl：文本方向从右向左。
+
+```js
+    ctx.fillText("Hi!", 550, 50);
+    ctx.direction = "rtl";
+    ctx.fillText("Hi!", 550, 100);
+    ctx.direction = "ltr";
+    ctx.fillText("Hi!", 550, 150);
+```
+
+![](./assets/iShot_2023-09-27_02.42.00.png)
+
+## 预测量文本宽度
+
+measureText()：将返回一个 TextMetrics对象的宽度、所在像素。
+
+```js
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+    
+    // 预测文件的长度
+    var textObj = ctx.measureText("foo hello")
+    console.log(" ~ text width:", textObj.width) //  ~ text width: 85.98046875
+```
