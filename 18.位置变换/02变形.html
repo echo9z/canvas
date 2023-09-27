@@ -28,13 +28,11 @@
     ctx.fill(p2d);
 
     ctx.fillStyle = "black";
-    ctx.beginPath();
     ctx.translate(100, 100); // 位移x100,y100
     ctx.fillRect(50,50, 50,50); // 当前在点50,50渲染，通过translate位移，在画布(150,150)位置渲染
-    ctx.closePath();
     
-    ctx.translate(100, 100); // 再次移动，在原上次传移动(150,150)点位移动，100得到250,250
-    ctx.fillRect(0,0, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
+    ctx.translate(100, 100); // 再次移动，在原上次传移动(100,100)距离，在100得到200,200，下面有50,50在 点位250,250渲染图形
+    ctx.fillRect(50,50, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
 
     // ctx.setTransform(1, 0, 0, 1, 0, 0);
     // ctx.fillRect(50,50, 50,50);

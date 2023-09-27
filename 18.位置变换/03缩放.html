@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="450">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+    var p2d = new Path2D()
+    p2d.arc(250, 100, 5, 0, Math.PI *2);
+    p2d.arc(500, 120, 5, 0, Math.PI *2);
+    ctx.fillStyle = "yellow";
+    ctx.fill(p2d);
+
+    ctx.arc(125, 50, 5, 0, Math.PI *2);
+    ctx.fill()
+
+    ctx.fillStyle = "black";
+     // 缩放，下面渲染坐标点(50,50) w:50 h:10缩放; 放大(50*5,2*50) w:50*5, h:10*2
+     // 最终得到fillRect(250,100, 250,20)
+    ctx.scale(5, 2);
+    ctx.fillRect(50,50, 50,10); 
+
+    ctx.scale(0.5, 0.5); 
+    // 先按scale(5, 2)=> (50*5=250, 50*2=100)，w:50*5, h:50*2;
+    // 再scale(0.5, 0.5)=> (250*0.5, 100*0.5), w:250*0.5, h:100*0.5,
+    // 最终得到画布位置fillRect(125,50, 125,50)
+    ctx.fillRect(50,50, 50,50);
+
+    // ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // ctx.fillRect(50,50, 50,50);
+    
+  </script>
+</body>
+</html>

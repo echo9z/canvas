@@ -1470,7 +1470,7 @@ shadowColor 是标准的 CSS 颜色值，用于设定阴影颜色效果，默认
   </script>
 ```
 
-![](./assets/iShot_2023-09-26_17.38.45.png)
+<img title="" src="./assets/iShot_2023-09-26_17.38.45.png" alt="" data-align="inline">
 
 ## 绘制图像和视频
 
@@ -1696,6 +1696,220 @@ measureText()：将返回一个 TextMetrics对象的宽度、所在像素。
 - 旋转
   - rotate(angle) 参数表示旋转角度
 
+### 状态的保存和恢复 Saving and restoring state
+
+save()：当前状态放入栈中，保存 canvas 全部状态的方法。
+
+restore()：将 canvas画布恢复到最近的保存状态的方法。如果没有保存状态，此方法不做任何改变。
+
+Canvas 的状态就是当前画面应用的所有样式和变形的一个快照。
+
+Canvas 状态存储在栈中，每当save()方法被调用后，当前的状态就被推送到栈中保存。一个绘画状态包括：
+
+- 当前应用的变形（即移动，旋转和缩放）
+- 以及下面这些属性：strokeStyle, fillStyle, globalAlpha, lineWidth, lineCap, lineJoin, miterLimit, lineDashOffset, shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor, globalCompositeOperation, font, textAlign, textBaseline, direction, imageSmoothingEnabled
+- 当前的裁切路径（clipping path）
+
+#### save和restore的应用例子
+
+```js
+    ctx.fillRect(0,0, 150, 150);
+    ctx.strokeStyle='red';
+    ctx.strokeRect(0,0, 150, 150);
+    ctx.save() // 保存当前画布的样式，会保存设置画布样式比如：fillStyle lineDashOffset globalAlpha等等样式
+
+    ctx.fillStyle='#09F';
+    ctx.fillRect(15,15, 120, 120);
+    ctx.save() // 会保存strokeStyle fillStyle样式，如果多次调用形成一个状态栈
+
+    ctx.globalAlpha=0.5;
+    ctx.fillStyle='#fff';
+    ctx.fillRect(30,30, 90, 90);
+
+    // 读取之前保存的canvas样式
+    ctx.restore(); // 读取栈中最近一次保存状态样式
+    ctx.fillRect(45,45, 60, 60);
+    ctx.strokeRect(45,45, 60, 60);
+    
+    ctx.restore(); // 读取栈中最底层的状态样式，默认黑色和red
+    ctx.fillRect(60,60, 30, 30);
+    ctx.strokeRect(60,60, 30, 30);
+```
+
+![](./assets/iShot_2023-09-27_23.54.37.png)
+
 ### translate
 
+translate方法接受两个参数。*x* 是左右偏移量，*y* 是上下偏移量
+
+在做变形之前先保存状态是一个良好的习惯。大多数情况下，调用 restore 方法比手动恢复原先的状态要简单得多。又，如果你是在一个循环中做位移但没有保存和恢复 canvas 的状态，很可能到最后会发现怎么有些东西不见了，那是因为它很可能已经超出 canvas 范围以外了。
+
+通俗理解将画布进行位移，比如`ctx.translate(100, 100)`，相当于原来基准点为(0,0)变为(100,100)；以(100,100)点位进行画图形
+
+<img src="./assets/canvas_grid_translate.png" title="" alt="" data-align="center">
+
+```js
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+    var p2d = new Path2D()
+    p2d.arc(50, 50, 5, 0, Math.PI *2);
+    p2d.arc(150, 150, 5, 0, Math.PI *2);
+    p2d.arc(250, 250, 5, 0, Math.PI *2);
+    ctx.fillStyle = "yellow";
+    ctx.fill(p2d);
+
+    ctx.fillStyle = "black";
+    ctx.translate(100, 100); // 位移x100,y100
+    ctx.fillRect(50,50, 50,50); // 当前在点50,50渲染，通过translate位移，在画布(150,150)位置渲染
+    
+    ctx.translate(100, 100); // 再次移动，在原上次传移动(100,100)距离，在100得到200,200，下面有50,50在 点位250,250渲染图形
+    ctx.fillRect(50,50, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
+```
+
+<img src="./assets/iShot_2023-09-27_21.08.29.png" title="" alt="" data-align="center">
+
+例子显示了一些移动 canvas 原点的好处。如果不使用 translate方法，那么所有矩形都将被绘制在相同的位置（0,0）。translate方法同时让我们可以任意放置这些图案，而不需要在 fillRect() 方法中手工调整坐标值，既好理解也方便使用。
+
+draw方法中调用 fillRect() 方法 9 次，用了 2 层循环。每一次循环，先移动 canvas，画螺旋图案，然后恢复到原始状态
+
+```js
+function draw() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+      ctx.save();
+      ctx.fillStyle = 'rgb(' + (51 * i) + ', ' + (255 - 51 * i) + ', 255)';
+      ctx.translate(10 + j * 50, 10 + i * 50);
+      ctx.fillRect(0, 0, 25, 25);
+      ctx.restore();
+    }
+  }
+}
+```
+
+![](./assets/iShot_2023-09-28_01.44.16.png)
+
+### setTransform
+
 重新设置（覆盖）当前的变换并调用变换的方法，
+
+`ctx.setTransform(a, b, c, d, e, f);`
+
+![](./assets/iShot_2023-09-27_21.11.29.png)
+
+`a (m11)`：水平缩放。`c (m21)`：水平倾斜。`e (dx)`：水平移动。
+
+*`b (m12)`*：垂直倾斜。`d (m22)`：垂直缩放。`f (dy)`：垂直移动。
+
+```js
+    ctx.translate(100, 100); // 再次移动，在原上次传移动(100,100)距离，在100得到200,200，下面有50,50在 点位250,250渲染图形
+    ctx.fillRect(50,50, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // 将当前变换矩阵重置为单位矩阵
+    ctx.fillRect(50,50, 50,50);
+```
+
+### 缩放 Scaling
+
+用它来增减图形在 canvas 中的像素数目，对形状，位图进行缩小或者放大。
+
+```js
+scale(x, y)
+```
+
+scale方法可以缩放画布的水平和垂直的单位。两个参数都是实数，可以为负数，x 为水平缩放因子，y 为垂直缩放因子，如果比 1 小，会缩小图形，如果比 1 大会放大图形。默认值为 1，为实际大小。
+
+```js
+    var p2d = new Path2D()
+    p2d.arc(250, 100, 5, 0, Math.PI *2);
+    p2d.arc(500, 120, 5, 0, Math.PI *2);
+    ctx.fillStyle = "yellow";
+    ctx.fill(p2d);
+
+    ctx.arc(125, 50, 5, 0, Math.PI *2);
+    ctx.fill()
+
+    ctx.fillStyle = "black";
+     // 缩放，下面渲染坐标点(50,50) w:50 h:10缩放; 放大(50*5,2*50) w:50*5, h:10*2
+     // 最终得到fillRect(250,100, 250,20)
+    ctx.scale(5, 2);
+    ctx.fillRect(50,50, 50,10); 
+
+    ctx.scale(0.5, 0.5); 
+    // 先按scale(5, 2)=> (50*5=250, 50*2=100)，w:50*5, h:50*2;
+    // 再scale(0.5, 0.5)=> (250*0.5, 100*0.5), w:250*0.5, h:100*0.5,
+    // 最终得到画布位置fillRect(125,50, 125,50)
+    ctx.fillRect(50,50, 50,50);
+```
+
+![](./assets/iShot_2023-09-28_02.15.20.png)
+
+### 旋转 Rotating
+
+以原点为中心旋转 canvas。角度变量表示一个顺时针旋转角度并且用弧度表示。
+
+```js
+ctx.rotate(angle);
+```
+
+<img src="./assets/canvas_grid_rotate.png" title="" alt="" data-align="center">
+
+旋转的角度 (`degree * Math.PI / 180` )，它是顺时针方向的，以弧度为单位的值。
+
+旋转的中心点始终是 canvas 的原点，如果要改变它，我们需要用到 translate方法。
+
+```js
+    var p2d = new Path2D()
+    p2d.arc(0, 0, 5, 0, Math.PI *2);
+    ctx.fillStyle = "red";
+    ctx.fill(p2d);
+
+    ctx.fillStyle = "pink";
+    ctx.fillRect(20, 0, 80, 20);
+    
+    ctx.rotate(Math.PI / 180 * 45); // 旋转45°
+    ctx.fillStyle = "skyblue";
+    ctx.fillRect(20, 0, 80, 20);
+    
+    ctx.translate(150,150); // 改变旋转的中心点
+    ctx.arc(0, 0, 5, 0, Math.PI *2);
+    ctx.fill()
+    for (let i = 0; i < 8; i++) {
+      ctx.fillRect(10, 10, 80, 10);
+      ctx.rotate(Math.PI / 180 * 45); // 旋转45°旋转是叠加，第一次循环45，第二次累加45+45
+      // ctx.fillRect(0, 0, 80, 10);
+    } 
+```
+
+![](./assets/iShot_2023-09-28_02.54.20.png)
+
+旋转例子
+
+ rotate方法来画圆并构成圆形图案。当然你也可以分别计算出 *x* 和 *y* 坐标（x = r*Math.cos(a); y = r*Math.sin(a)）。这里无论用什么方法都无所谓的，因为我们画的是圆。计算坐标的结果只是旋转圆心位置，而不是圆本身。即使用 rotate旋转两者，那些圆看上去还是一样的，不管它们绕中心旋转有多远。
+
+第一层循环决定环的数量，第二层循环决定每环有多少个点。每环开始之前，我都保存一下 canvas 的状态，这样恢复起来方便。每次画圆点，我都以一定夹角来旋转 canvas，而这个夹角则是由环上的圆点数目的决定的。最里层的环有 6 个圆点，这样，每次旋转的夹角就是 360/6 = 60 度。往外每一环的圆点数目是里面一环的 2 倍，那么每次旋转的夹角随之减半。
+
+<img src="./assets/iShot_2023-09-28_03.20.06.png" title="" alt="" data-align="center">
+
+```js
+function draw() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+  ctx.translate(75,75);
+
+  for (var i=1;i<6;i++){ // Loop through rings (from inside to out)
+    ctx.save();
+    ctx.fillStyle = 'rgb('+(51*i)+','+(255-51*i)+',255)';
+
+    for (var j=0;j<i*6;j++){ // draw individual dots
+      ctx.rotate(Math.PI*2/(i*6));
+      ctx.beginPath();
+      ctx.arc(0,i*12.5,5,0,Math.PI*2,true);
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+}
+```

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="450">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+    var p2d = new Path2D()
+    p2d.arc(0, 0, 5, 0, Math.PI *2);
+    ctx.fillStyle = "red";
+    ctx.fill(p2d);
+
+    ctx.fillStyle = "pink";
+    ctx.fillRect(20, 0, 80, 20);
+    
+    ctx.rotate(Math.PI / 180 * 45); // 旋转45°
+    ctx.fillStyle = "skyblue";
+    ctx.fillRect(20, 0, 80, 20);
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // ctx.fillRect(50,50, 50,50);
+
+    ctx.translate(150,150); // 改变旋转的中心点
+    ctx.arc(0, 0, 5, 0, Math.PI *2);
+    ctx.fill()
+    for (let i = 0; i < 8; i++) {
+      ctx.fillRect(10, 10, 80, 10);
+      ctx.rotate(Math.PI / 180 * 45); // 旋转45°旋转是叠加，第一次循环45，第二次累加45+45
+      // ctx.fillRect(0, 0, 80, 10);
+    }    
+
+
+  </script>
+</body>
+</html>
