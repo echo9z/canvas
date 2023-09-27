@@ -1563,8 +1563,6 @@ drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
 
 ![](./assets/2023-09-26%2020.42.42.gif)
 
-
-
 ## 绘制文本
 
 ### fillText与strokeText
@@ -1590,7 +1588,7 @@ canvas 提供了两种方法来渲染文本：
     // 设置文字在 画布上的位置fillText('text', x, y, 文字最大宽度): 最大宽度100
     // ctx.fillText('Hello!', 50, 60, 100);
     ctx.fillText('Hello!', 50, 60);
-  
+
     ctx.strokeStyle='red';
     ctx.strokeText('Hello!', 50, 120);
 ```
@@ -1674,7 +1672,7 @@ ctx.direction = "ltr" || "rtl" || "inherit";
 
 ![](./assets/iShot_2023-09-27_02.42.00.png)
 
-## 预测量文本宽度
+### 预测量文本宽度
 
 measureText()：将返回一个 TextMetrics对象的宽度、所在像素。
 
@@ -1683,8 +1681,21 @@ measureText()：将返回一个 TextMetrics对象的宽度、所在像素。
     var cav = document.getElementById("canvas");
     // 2.获取画布的 2D 渲染上下文
     var ctx = cav.getContext("2d");
-    
+
     // 预测文件的长度
     var textObj = ctx.measureText("foo hello")
     console.log(" ~ text width:", textObj.width) //  ~ text width: 85.98046875
 ```
+
+## 变换
+
+- 平移 移动画布的原点
+  - translate(x,y) 参数表示移动目标点的坐标
+- 缩放
+  - scale(x,y) 参数表示宽高的缩放比例
+- 旋转
+  - rotate(angle) 参数表示旋转角度
+
+### translate
+
+重新设置（覆盖）当前的变换并调用变换的方法，

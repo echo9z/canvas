@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="450">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+    var p2d = new Path2D()
+    p2d.arc(50, 50, 5, 0, Math.PI *2);
+    p2d.arc(150, 150, 5, 0, Math.PI *2);
+    p2d.arc(250, 250, 5, 0, Math.PI *2);
+    ctx.fillStyle = "yellow";
+    ctx.fill(p2d);
+
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.translate(100, 100); // 位移x100,y100
+    ctx.fillRect(50,50, 50,50); // 当前在点50,50渲染，通过translate位移，在画布(150,150)位置渲染
+    ctx.closePath();
+    
+    ctx.translate(100, 100); // 再次移动，在原上次传移动(150,150)点位移动，100得到250,250
+    ctx.fillRect(0,0, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
+
+    // ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // ctx.fillRect(50,50, 50,50);
+    
+  </script>
+</body>
+</html>
