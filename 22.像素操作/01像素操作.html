@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="500">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 获取图片
+    var img = new Image();
+    img.src = '../assets/img/arc.png' // 需要等待图片加载
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0, 300, 250); 
+      // 通过ctx
+      let imageData = ctx.getImageData(0, 0, 300, 250);
+      console.log("🚀 获取像素对象数据:", imageData.data)
+      
+      for (let i = 0; i < imageData.data.length; i+=4) {
+        imageData.data[i] = 255 - imageData.data[i]
+        imageData.data[i+1] = 255 - imageData.data[i+1]
+        imageData.data[i+2] = 255 - imageData.data[i +2 ]
+        imageData.data[i+3] = 255
+      }
+      // context.putImageData(imagedata, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+      // putImageData(imagedata, 基准x, 基准y, 变换x轴, 变换y轴, dirtyWidth, dirtyHeight);
+      ctx.putImageData(imageData, 0, 0, 150, 125, 150, 125); // 以300,250点位，将给定ImageData对象中的数据绘制到画布上。
+    }
+  </script>
+</body>
+</html>

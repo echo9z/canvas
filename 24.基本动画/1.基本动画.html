@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="400">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+
+  <script>
+    function clock(){
+      var now = new Date();
+      var ctx = document.getElementById('canvas').getContext('2d');
+      
+    }
+
+    window.requestAnimationFrame(clock);
+  </script>
+  
+</body>
+</html>

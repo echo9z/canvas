@@ -2027,8 +2027,6 @@ Compositing 示例
 
 ![](./assets/canvas_clipping_path.png)
 
-
-
 ```js
     // 画布上加载图片
     var path2D = new Path2D()
@@ -2111,3 +2109,542 @@ function drawStar(ctx,r){
 ![](./assets/iShot_2023-09-29_03.56.54.png)
 
 ## 像素操作
+
+### ImageData 对象
+
+`getImageData`：返回一个[`ImageData`](https://developer.mozilla.org/zh-CN/docs/Web/API/ImageData)对象，用来描述 canvas 区域隐含的像素数据，这个区域通过矩形表示，起始点为 **(sx, sy)、宽为sw、高为sh**。
+
+```js
+ImageData ctx.getImageData(sx, sy, sw, sh);
+```
+
+ImageData对象中存储着 canvas 对象真实的像素数据，它包含以下几个只读属性：
+
+width：图片宽度，单位是像素
+
+height：图片高度，单位是像素
+
+data：Uint8ClampedArray 类型的一维数组，包含着 RGBA 格式的整型数据，范围在 0 至 255 之间（包括 255）。
+
+    data 属性返回一个 Uint8ClampedArray，它可以被使用作为查看初始像素数据。每个像素用 4 个 1bytes 值 (按照红，绿，蓝和透明值的顺序; 这就是"RGBA"格式) 来代表。
+
+    每个颜色值部份用 0 至 255 来代表。每个部份被分配到一个在数组内连续的索引，左上角像素的红色部份在数组的索引 0 位置。像素从左到右被处理，然后往下，遍历整个数组。
+
+![](./assets/19167581-EF50-41A2-9022-02CF0D808B92.png)
+
+Uint8ClampedArray 包含高度 × 宽度 × 4 bytes 数据，索引值从 0 到 (高度× 宽度 ×4)-1
+
+例如，要读取图片中位于第 50 行，第 200 列的像素的蓝色部份，你会写以下代码：
+
+```js
+blueComponent = imageData.data[((50 * (imageData.width * 4)) + (200 * 4)) + 2];
+```
+
+根据行、列读取某像素点的 R/G/B/A 值的公式：
+
+```js
+imageData.data[((50 * (imageData.width * 4)) + (200 * 4)) + 0/1/2/3];
+```
+
+你可能用会使用 Uint8ClampedArray.length 属性来读取像素数组的大小（以 bytes 为单位）：
+
+```js
+var numBytes = imageData.data.length;
+```
+
+### 创建一个 ImageData 对象
+
+去创建一个新的，空白的 ImageData对象，你应该会使用createImageData() 方法。有 2 个版本的 createImageData() 方法。
+
+```
+var myImageData = ctx.createImageData(width, height);
+```
+
+上面代码创建了一个新的具体特定尺寸的 ImageData对象。所有像素被预设为透明黑。
+
+你也可以创建一个被 anotherImageData对象指定的相同像素的 ImageData对象。这个新的对象像素全部被预设为透明黑。这个并非复制了图片数据。
+
+```
+var myImageData = ctx.createImageData(anotherImageData);
+```
+
+### 得到场景像素数据
+
+为了获得一个包含画布场景像素数据的 ImageData 对像，你可以用 getImageData() 方法：
+
+```
+var myImageData = ctx.getImageData(left, top, width, height);
+```
+
+这个方法会返回一个 ImageData对象，它代表了画布区域的对象数据，此画布的四个角落分别表示为 (left, top), (left + width, top), (left, top + height), 以及 (left + width, top + height) 四个点。这些坐标点被设定为画布坐标空间元素。
+
+任何在画布以外的元素都会被返回成一个透明黑的 ImageData 对像。
+
+```js
+    // 获取图片
+    var img = new Image();
+    img.src = '../assets/img/arc.png' // 需要等待图片加载
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0, 300, 250); 
+      // 通过ctx
+      let imageData = ctx.getImageData(0, 0, 300, 250);
+      console.log("🚀 获取像素对象数据:", imageData.data)
+      
+      for (let i = 0; i < imageData.data.length; i+=4) {
+        imageData.data[i] = 255 - imageData.data[i]
+        imageData.data[i+1] = 255 - imageData.data[i+1]
+        imageData.data[i+2] = 255 - imageData.data[i +2 ]
+        imageData.data[i+3] = 255
+      }
+      // context.putImageData(imagedata, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+      // putImageData(imagedata, 基准x, 基准y, 变换x轴, 变换y轴, dirtyWidth, dirtyHeight);
+      ctx.putImageData(imageData, 0, 0, 150, 125, 150, 125); // 以300,250点位，将给定ImageData对象中的数据绘制到画布上。
+    }
+```
+
+
+
+
+
+### 颜色选择器
+
+在这个例子里面，我们会使用getImageData()去展示鼠标光标下的颜色。为此，我们要当前鼠标的位置，记为 layerX 和 layerY，然后我们去查询getImageData()给我们提供的在那个位置的像数数组里面的像素数据。最后我们使用数组数据去设置背景颜色和div的文字去展示颜色值。
+
+```js
+var img = new Image();
+img.crossOrigin = 'anonymous';
+img.src = './assets/rhino.jpg';
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+img.onload = function() {
+  ctx.drawImage(img, 0, 0);
+  img.style.display = 'none';
+};
+var hoveredColor = document.getElementById('hovered-color');
+var selectedColor = document.getElementById('selected-color');
+
+function pick(event, destination) {
+  var x = event.layerX;
+  var y = event.layerY;
+  var pixel = ctx.getImageData(x, y, 1, 1);
+  var data = pixel.data;
+
+    const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
+    destination.style.background = rgba;
+    destination.textContent = rgba;
+
+    return rgba;
+}
+
+canvas.addEventListener('mousemove', function(event) {
+    pick(event, hoveredColor);
+});
+canvas.addEventListener('click', function(event) {
+    pick(event, selectedColor);
+});
+```
+
+![](./assets/1667111496158-a89a03f4-7def-438d-ac5f-bff66c5630d2.png)
+
+### 在场景中写入像素数据
+
+你可以用 putImageData() 方法去对场景进行像素数据的写入。
+
+```js
+ctx.putImageData(myImageData, dx, dy);
+```
+
+dx 和 dy 参数表示你希望在场景内左上角绘制的像素数据所得到的设备坐标。
+
+例如，为了在场景内左上角绘制 myImageData 代表的图片，你可以写如下的代码：
+
+```js
+ctx.putImageData(myImageData, 0, 0);
+```
+
+### 图片灰度和反相颜色
+
+在这个例子里，我们遍历所有像素以改变他们的数值。然后我们将被修改的像素数组通过 putImageData() 放回到画布中去。invert 函数仅仅是去减掉颜色的最大色值 255.grayscale 函数仅仅是用红绿和蓝的平均值。你也可以用加权平均，例如 x = 0.299r + 0.587g + 0.114b 这个公式。更多资料请参考维基百科的Grayscale。
+
+```
+var img = new Image();
+img.crossOrigin = 'anonymous';
+img.src = './assets/rhino.jpg';
+
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+img.onload = function() {
+    ctx.drawImage(img, 0, 0);
+};
+
+var original = function() {
+    ctx.drawImage(img, 0, 0);
+};
+
+var invert = function() {
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (var i = 0; i < data.length; i += 4) {
+        data[i]     = 255 - data[i];     // red
+        data[i + 1] = 255 - data[i + 1]; // green
+        data[i + 2] = 255 - data[i + 2]; // blue
+    }
+    ctx.putImageData(imageData, 0, 0);
+};
+
+var grayscale = function() {
+    ctx.drawImage(img, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (var i = 0; i < data.length; i += 4) {
+        var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i]     = avg; // red
+        data[i + 1] = avg; // green
+        data[i + 2] = avg; // blue
+    }
+    ctx.putImageData(imageData, 0, 0);
+};
+
+const inputs = document.querySelectorAll('[name=color]');
+for (const input of inputs) {
+    input.addEventListener("change", function(evt) {
+        switch (evt.target.value) {
+            case "inverted":
+                return invert();
+            case "grayscale":
+                return grayscale();
+            default:
+                return original();
+        }
+    });
+}
+```
+
+![img](assets/166670-7e0e3202-3d0c-4a39-9e96-57912ec84ff2.png)
+
+### 缩放和反锯齿
+
+在drawImage() 方法，第二个画布和imageSmoothingEnabled 属性的帮助下，我们可以放大显示我们的图片及看到详情内容。
+
+我们得到鼠标的位置并裁剪出距左和上 5 像素，距右和下 5 像素的图片。然后我们将这幅图复制到另一个画布然后将图片调整到我们想要的大小。在缩放画布里，我们将 10×10 像素的对原画布的裁剪调整为 200×200。
+
+```js
+zoomctx.drawImage(canvas,
+                  Math.abs(x - 5), Math.abs(y - 5),
+                  10, 10, 0, 0, 200, 200);
+```
+
+imageSmoothingEnabled 属性的效果（不同浏览器需要不同前缀）。
+
+```html
+<canvas id="canvas" width="300" height="227"></canvas>
+<canvas id="zoom" width="300" height="227"></canvas>
+<div>
+<label for="smoothbtn">
+  <input type="checkbox" name="smoothbtn" checked="checked" id="smoothbtn">
+  Enable image smoothing
+</label>
+</div>
+```
+
+ZOOM EXAMPLE
+
+```html
+<canvas id="canvas" width="300" height="227"></canvas>
+<canvas id="zoom" width="300" height="227"></canvas>
+<div>
+  <label for="smoothbtn">
+    <input type="checkbox" name="smoothbtn" checked="checked" id="smoothbtn">
+    Enable image smoothing
+  </label>
+</div>
+```
+
+JavaScript
+
+```js
+var img = new Image();
+img.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+img.onload = function() {
+  draw(this);
+};
+
+function draw(img) {
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  img.style.display = 'none';
+  var zoomctx = document.getElementById('zoom').getContext('2d');
+
+  var smoothbtn = document.getElementById('smoothbtn');
+  var toggleSmoothing = function(event) {
+    zoomctx.imageSmoothingEnabled = this.checked;
+    zoomctx.mozImageSmoothingEnabled = this.checked;
+    zoomctx.webkitImageSmoothingEnabled = this.checked;
+    zoomctx.msImageSmoothingEnabled = this.checked;
+  };
+  smoothbtn.addEventListener('change', toggleSmoothing);
+
+  var zoom = function(event) {
+    var x = event.layerX;
+    var y = event.layerY;
+    zoomctx.drawImage(canvas,
+                      Math.abs(x - 5),
+                      Math.abs(y - 5),
+                      10, 10,
+                      0, 0,
+                      200, 200);
+  };
+
+  canvas.addEventListener('mousemove', zoom);
+}
+```
+
+## 保存图片
+
+HTMLCanvasElement 提供一个 toDataURL() 方法，此方法在保存图片的时候非常有用。它返回一个包含被类型参数规定的图像表现格式的数据链接。返回的图片分辨率是 96dpi。
+
+canvas.toDataURL('image/png')：默认设定。创建一个 PNG 图片。
+
+canvas.toDataURL('image/jpeg', quality)：创建一个 JPG 图片。你可以有选择地提供从 0 到 1 的品质量，1 表示最好品质，0 基本不被辨析但有比较小的文件大小。
+
+从画布中生成了一个数据链接，例如，你可以将它用于任何image元素，或者将它放在一个有 download 属性的超链接里用于保存到本地。
+
+也可以从画布中创建一个Blob对象。
+
+canvas.toBlob(callback, type, encoderOptions)：创建一个在画布中的代表图片的 Blob 对象
+
+isPointInPath()判断路径中是否包含监测点（作为参数传入）。
+
+## 图像元素交互
+
+### isPointInPath()介绍
+
+ctx.isPointInPath(x, y) 判断监测点(x，y)是否在路径内，返回 boolean
+
+ctx.isPointInPath(x, y, fillRule) 判断监测点(x，y)和路径的位置关系，通过fillRule来决定是路径内还是路径外。fillRule的可选参数是nonzero(非零环绕算法)和evenadd(奇偶环绕算法)
+
+context.rect(10,10,100,100)，那么所有在这个路径内的点都能被isPointInPath(x,y)判断为true，如(50,50);
+
+```js
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+ctx.rect(10, 10, 100, 100);
+ctx.stroke();
+console.log(ctx.isPointInPath(10, 10)); // true
+```
+
+```js
+      // 1.找到canvas对象
+      var cav = document.getElementById("cav");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx2D = cav.getContext("2d");
+      if (!ctx2D.getContext)
+        cav.innerText = "当前浏览器不支持canvas，请下载最新浏览器";
+
+      class Heart {
+        constructor(x, y, canvas, ctx) {
+          this.x = x;
+          this.y = y;
+          this.ctx = ctx
+          this.color = 'red'
+          canvas.onmousemove = (e) => {
+            let x = e.offsetX
+            let y = e.offsetY
+            const isIn = this.isPoint(x, y)
+            if (isIn) {
+              console.log('在');
+              this.color = 'pink'
+            } else {
+              this.color = 'skyblue'
+              console.log('不在');
+            }
+            this.draw()
+          }
+        }
+        setPoint(x, y) {
+          this.x = x;
+          this.y = y;
+        }
+        draw() {
+          this.heartPath = new Path2D();
+          // heartPath.moveTo(220, 100); // 起点
+          // heartPath.bezierCurveTo(100, 50, 80, 170, 220, 250);
+          // heartPath.bezierCurveTo(360, 170, 340, 50, 220, 100);
+          this.heartPath.moveTo(this.x, this.y); // 起点
+          this.heartPath.bezierCurveTo(this.x-120, this.y-50, this.x-140, this.y+70, this.x, this.y+150);
+          this.heartPath.bezierCurveTo(this.x+140, this.y+70, this.x+120, this.y-50, this.x, this.y);
+
+          this.ctx.save();
+          // this.ctx.translate(this.x, this.y);
+          // this.ctx.scale(0.5, 0.5);
+          this.ctx.stroke(this.heartPath);
+          this.ctx.fillStyle= this.color;
+          this.ctx.fill(this.heartPath);
+          this.ctx.restore();
+        }
+
+        isPoint(x, y) {
+          const isPoint = this.ctx.isPointInPath(this.heartPath, x, y);
+          return isPoint
+        }
+      }
+
+      new Heart(100, 50, cav, ctx2D).draw();
+```
+
+### isPointInStroke()
+
+**CanvasRenderingContext2D.isPointInStroke()** 是 Canvas 2D API 用于检测某点是否在路径的描边线上的方法。
+
+```js
+ctx.isPointInStroke(x, y);
+ctx.isPointInStroke(path, x, y);
+```
+
+### 拖拽小方块
+
+    拖拽小方块，我们利用isPointInPath()来判断某一时刻鼠标是否在矩形路径内，如果在路径内，则切换方块为拖拽状态，设定拖拽的样式变化（如光标变小手等等），然后随着鼠标的按下移动通过不断地清除、设定路径、绘制此时刻图像来达成视觉上的拖拽的目的。
+
+注意：当鼠标按下拖拽的时候光标位置在矩形内的某个位置，那么在矩形移动后，光标也应该不断保持在矩形的那个位置。
+
+```html
+  <style>
+      #canvas {
+        cursor: default;
+        border: 1px solid black;
+      }
+  </style>
+  <body>
+    <canvas id="canvas" width="400" height="400">Canvas not supported</canvas>
+    <p>拖拽方块并实时重绘</p>
+  </body>
+  <script>
+    "use strict";
+
+    let canvas = document.getElementById("canvas"),
+      context = canvas.getContext("2d"),
+      //初始时的矩形属性
+      initX = 10,
+      initY = 10,
+      initWidth = 100,
+      initHeight = 100,
+      isDrag = false,
+      //多边形存储在这个地方
+      polygons = {
+        fillStyle: "lightgray",
+        strokeStyle: "blue",
+        loc: { x: 0, y: 0 },
+        height: initHeight,
+        width: initWidth,
+        offsetX: 0,
+        offsetY: 0,
+      };
+
+    //Function……
+
+    /**
+     * 绘制初试状态的矩形
+     */
+    let drawInitRect = () => {
+      context.fillStyle = polygons.fillStyle;
+      context.strokeStyle = polygons.strokeStyle;
+      context.rect(initX, initY, initWidth, initHeight);
+      polygons.loc.x = initX;
+      polygons.loc.y = initY;
+      polygons.width = initWidth;
+      polygons.height = initHeight;
+      context.fill();
+      context.stroke();
+    };
+    //Event……
+
+    /**
+     * 当鼠标按下式
+     * @param ev
+     */
+    canvas.onmousedown = (ev) => {
+      isDrag = context.isPointInPath(ev.clientX, ev.clientY);
+      polygons.offsetX = ev.clientX - polygons.loc.x;
+      polygons.offsetY = ev.clientY - polygons.loc.y;
+      polygons.loc.x = ev.clientX;
+      polygons.loc.y = ev.clientY;
+    };
+
+    /**
+     * 鼠标移动时
+     * @param ev
+     */
+    canvas.onmousemove = (ev) => {
+      if (isDrag) {
+        context.beginPath();
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.rect(
+          ev.clientX - polygons.offsetX,
+          ev.clientY - polygons.offsetY,
+          initWidth,
+          initHeight
+        );
+        context.fill();
+        context.stroke();
+      } else {
+        //鼠标经过的时候是否需要变小手
+        if (context.isPointInPath(ev.clientX, ev.clientY)) {
+          //设置光标状态
+          canvas.style.cursor = "pointer";
+        } else {
+          canvas.style.cursor = "default";
+        }
+      }
+    };
+
+    canvas.onmouseup = (ev) => {
+      isDrag = false;
+      polygons.loc.x = ev.clientX - polygons.offsetX;
+      polygons.loc.y = ev.clientY - polygons.offsetY;
+    };
+
+    //Init……
+    drawInitRect();
+  </script>
+```
+
+## 动画的操作
+
+由于我们是用 JavaScript 去操控 canvas 对象，这样要实现一些交互动画也是相当容易的。
+
+通过以下的步骤来画出一帧：
+
+1. **清空 canvas** 除非接下来要画的内容会完全充满 canvas（例如背景图），否则你需要清空所有。最简单的做法就是用 clearRect 方法。
+2. **保存 canvas 状态** 如果你要改变一些会改变 canvas 状态的设置（样式，变形之类的），又要在每画一帧之时都是原始状态的话，你需要先保存一下。
+3. **绘制动画图形（animated shapes）** 这一步才是重绘动画帧。
+4. **恢复 canvas 状态** 如果已经保存了 canvas 的状态，可以先恢复它，然后重绘下一帧。
+
+## 操控动画 Controlling an animation
+
+在 canvas 上绘制内容是用 canvas 提供的或者自定义的方法，而通常，我们仅仅在脚本执行结束后才能看见结果，比如说，在 for 循环里面做完成动画是不太可能的。
+
+因此，为了实现动画，我们需要一些可以定时执行重绘的方法。有两种方法可以实现这样的动画操控。首先可以通过 setInterval 和 setTimeout 方法来控制在设定的时间点上执行重绘。
+
+## 安排的更新画布Scheduled updates
+
+首先，可以用window.setInterval(), window.setTimeout(),和window.requestAnimationFrame()来设定定期执行一个指定函数。
+
+setInterval(function, delay)(en-US)
+
+当设定好间隔时间后，function 会定期执行。
+
+setTimeout(function, delay)(en-US)
+
+在设定好的时间之后执行函数
+
+requestAnimationFrame(callback)
+
+告诉浏览器你希望执行一个动画，并在重绘之前，请求浏览器执行一个特定的函数来更新动画。
+
+如果你并不需要与用户互动，你可以使用 setInterval() 方法，它就可以定期执行指定代码。如果我们需要做一个游戏，我们可以使用键盘或者鼠标事件配合上 setTimeout() 方法来实现。通过设置事件监听，我们可以捕捉用户的交互，并执行相应的动作。
+
+下面的例子，采用 window.requestAnimationFrame()实现动画效果。这个方法提供了更加平缓并更加有效率的方式来执行动画，当系统准备好了重绘条件的时候，才调用绘制动画帧。一般每秒钟回调函数执行 60 次，也有可能会被降低。

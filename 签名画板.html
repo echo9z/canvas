@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .active {
+      background-color: skyblue;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <canvas id="c1" width="800" height="600"></canvas>
+    <hr>
+    <button id="boldBtn" type="button">粗线条</button>
+    <button id="thinBtn" type="button">细线条</button>
+    <button id="saveBtn" type="button">保存签名</button>
+    <input type="color" id="color" value="" />
+    <button id="clearBtn">橡皮擦</button>
+    <button id="nullBtn">清空画布</button>
+  </div>
+  <img src="#" alt="#" id="saveImg" />
+
+  <script>
+    var canvas = document.querySelector('#c1')
+    var ctx = canvas.getContext('2d');
+    ctx.lineJoin='round'; // 连接处圆润
+    ctx.lineCap='round';
+    
+    var boldBtn = document.querySelector('#boldBtn') // 粗线条
+    var thinBtn = document.querySelector('#thinBtn') // 细线条
+    var saveBtn = document.querySelector('#saveBtn') // 保存签名
+    var color = document.querySelector('#color') // 颜色
+
+    var clearBtn = document.querySelector('#clearBtn') // 橡皮擦
+    var nullBtn = document.querySelector('#nullBtn') // 清空画布
+
+    var isDraw = false // 设置允许绘制变量
+
+    canvas.onmousedown = (e) => {
+      isDraw = true; 
+      var x = e.pageX - canvas.offsetLeft;
+      var y = e.pageY - canvas.offsetTop;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+    canvas.onmouseleave = function() {
+      isDraw = false;
+      ctx.closePath();
+    }
+    canvas.onmouseup = function() {
+      isDraw = false;
+      ctx.closePath();
+    }
+    canvas.onmousemove = function(e) {
+      if (isDraw) {
+        var x = e.pageX - canvas.offsetLeft;
+        var y = e.pageY - canvas.offsetTop;
+        ctx.lineTo(x, y);
+        ctx.stroke()
+      }
+    }
+
+    boldBtn.onclick = function (e) {
+      ctx.globalCompositeOperation='source-over';
+      ctx.lineWidth=20;
+      boldBtn.classList.add("active");
+      thinBtn.classList.remove("active");
+    }
+    thinBtn.onclick = function (e) {
+      ctx.globalCompositeOperation='source-over';
+      ctx.lineWidth=2;
+      thinBtn.classList.add("active");
+      boldBtn.classList.remove("active");
+    }
+
+    clearBtn.onclick = function () {
+      ctx.globalCompositeOperation='destination-out';
+      ctx.lineWidth= 50;
+    }
+    
+    nullBtn.onclick = function () {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    color.onchange = function (e) {
+      console.log(e.target.value);
+      ctx.strokeStyle = e.target.value
+    }
+    // 保存签名
+    saveBtn.onclick = function () {
+      var urlData = canvas.toDataURL(); // 转换为base64根式
+      var img = new Image();
+      img.src = urlData
+      document.querySelector('img').src = img.src
+
+      // 点击时触发下载签名
+      var downloadA = document.createElement('a');
+      downloadA.setAttribute('download', '签名')
+      downloadA.href = urlData
+      downloadA.click()
+    }
+  </script>
+</body>
+</html>
