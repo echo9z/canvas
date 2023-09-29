@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="450">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+    
+    ctx.fillStyle = "rgba(0,0,255,1)";
+    ctx.fillRect(50,50, 100, 100);
+
+    // ctx.globalCompositeOperation='source-out'
+    ctx.fillStyle = "rgba(255,0,0,1)";
+    ctx.fillRect(100,100, 100, 100);
+
+  </script>
+</body>
+</html>

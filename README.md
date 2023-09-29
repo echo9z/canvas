@@ -1730,7 +1730,7 @@ Canvas 状态存储在栈中，每当save()方法被调用后，当前的状态�
     ctx.restore(); // 读取栈中最近一次保存状态样式
     ctx.fillRect(45,45, 60, 60);
     ctx.strokeRect(45,45, 60, 60);
-    
+
     ctx.restore(); // 读取栈中最底层的状态样式，默认黑色和red
     ctx.fillRect(60,60, 30, 30);
     ctx.strokeRect(60,60, 30, 30);
@@ -1763,7 +1763,7 @@ translate方法接受两个参数。*x* 是左右偏移量，*y* 是上下偏�
     ctx.fillStyle = "black";
     ctx.translate(100, 100); // 位移x100,y100
     ctx.fillRect(50,50, 50,50); // 当前在点50,50渲染，通过translate位移，在画布(150,150)位置渲染
-    
+
     ctx.translate(100, 100); // 再次移动，在原上次传移动(100,100)距离，在100得到200,200，下面有50,50在 点位250,250渲染图形
     ctx.fillRect(50,50, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
 ```
@@ -1790,26 +1790,6 @@ function draw() {
 ```
 
 ![](./assets/iShot_2023-09-28_01.44.16.png)
-
-### setTransform
-
-重新设置（覆盖）当前的变换并调用变换的方法，
-
-`ctx.setTransform(a, b, c, d, e, f);`
-
-![](./assets/iShot_2023-09-27_21.11.29.png)
-
-`a (m11)`：水平缩放。`c (m21)`：水平倾斜。`e (dx)`：水平移动。
-
-*`b (m12)`*：垂直倾斜。`d (m22)`：垂直缩放。`f (dy)`：垂直移动。
-
-```js
-    ctx.translate(100, 100); // 再次移动，在原上次传移动(100,100)距离，在100得到200,200，下面有50,50在 点位250,250渲染图形
-    ctx.fillRect(50,50, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0); // 将当前变换矩阵重置为单位矩阵
-    ctx.fillRect(50,50, 50,50);
-```
 
 ### 缩放 Scaling
 
@@ -1868,11 +1848,11 @@ ctx.rotate(angle);
 
     ctx.fillStyle = "pink";
     ctx.fillRect(20, 0, 80, 20);
-    
+
     ctx.rotate(Math.PI / 180 * 45); // 旋转45°
     ctx.fillStyle = "skyblue";
     ctx.fillRect(20, 0, 80, 20);
-    
+
     ctx.translate(150,150); // 改变旋转的中心点
     ctx.arc(0, 0, 5, 0, Math.PI *2);
     ctx.fill()
@@ -1885,9 +1865,9 @@ ctx.rotate(angle);
 
 ![](./assets/iShot_2023-09-28_02.54.20.png)
 
-旋转例子
+旋转例子：
 
- rotate方法来画圆并构成圆形图案。当然你也可以分别计算出 *x* 和 *y* 坐标（x = r*Math.cos(a); y = r*Math.sin(a)）。这里无论用什么方法都无所谓的，因为我们画的是圆。计算坐标的结果只是旋转圆心位置，而不是圆本身。即使用 rotate旋转两者，那些圆看上去还是一样的，不管它们绕中心旋转有多远。
+    rotate方法来画圆并构成圆形图案。当然你也可以分别计算出 *x* 和 *y* 坐标（x = r*Math.cos(a); y = r*Math.sin(a)）。这里无论用什么方法都无所谓的，因为我们画的是圆。计算坐标的结果只是旋转圆心位置，而不是圆本身。即使用 rotate旋转两者，那些圆看上去还是一样的，不管它们绕中心旋转有多远。
 
 第一层循环决定环的数量，第二层循环决定每环有多少个点。每环开始之前，我都保存一下 canvas 的状态，这样恢复起来方便。每次画圆点，我都以一定夹角来旋转 canvas，而这个夹角则是由环上的圆点数目的决定的。最里层的环有 6 个圆点，这样，每次旋转的夹角就是 360/6 = 60 度。往外每一环的圆点数目是里面一环的 2 倍，那么每次旋转的夹角随之减半。
 
@@ -1913,3 +1893,221 @@ function draw() {
   }
 }
 ```
+
+### 变形 Transforms
+
+transform(a, b, c, d, e, f)：使用矩阵多次叠加当前变换的方法，矩阵由方法的参数进行描述。你可以缩放、旋转、移动和倾斜上下文。
+
+这个方法是将当前的变形矩阵乘上一个基于自身参数的矩阵，如下面的矩阵所示：
+
+![img](https://threejs-1251830808.cos.ap-guangzhou.myqcloud.com/1667227677196-4449db4d-89f3-447a-b8fc-e6c8bb1e3597.png)
+
+如果任意一个参数是Infinity，变形矩阵也必须被标记为无限大，否则会抛出异常。
+
+矩阵旋转变化
+
+```js
+    var p2d = new Path2D()
+    p2d.arc(0, 0, 5, 0, Math.PI *2);
+
+    ctx.transform(1, 1, -1, 1, 100, 100); // 比如旋转45°
+    p2d.rect(0,0,100,100);
+    ctx.fillStyle = "red";
+    ctx.fill(p2d);
+```
+
+矩阵移动变化
+
+```js
+    var p2d = new Path2D()
+
+    ctx.transform(1, 0, 0, 1, 100, 100); // 画布基准点以100,100为基准
+    p2d.rect(0,0, 100, 100);
+    ctx.fillStyle = "red";
+    ctx.fill(p2d); 
+```
+
+![](./assets/iShot_2023-09-28_17.51.57.png)
+
+#### setTransform
+
+重新设置（覆盖）当前的变换并调用变换的方法，
+
+`ctx.setTransform(a, b, c, d, e, f);`
+
+`a (m11)`：水平缩放。`c (m21)`：水平倾斜。`e (dx)`：水平移动。
+
+*`b (m12)`*：垂直倾斜。`d (m22)`：垂直缩放。`f (dy)`：垂直移动。
+
+```js
+    ctx.translate(100, 100); // 再次移动，在原上次传移动(100,100)距离，在100得到200,200，下面有50,50在 点位250,250渲染图形
+    ctx.fillRect(50,50, 50,50); // 原点是50,50通过位移，将原点移动到100,100距离
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // 将当前变换矩阵重置为单位矩阵
+    ctx.fillRect(50,50, 50,50);
+```
+
+```js
+function draw() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+
+  var sin = Math.sin(Math.PI/6);
+  var cos = Math.cos(Math.PI/6);
+  ctx.translate(100, 100);
+  var c = 0;
+  for (var i=0; i <= 12; i++) {
+    c = Math.floor(255 / 12 * i);
+    ctx.fillStyle = "rgb(" + c + "," + c + "," + c + ")";
+    ctx.fillRect(0, 0, 100, 10);
+    ctx.transform(cos, sin, -sin, cos, 0, 0);
+  }
+
+  ctx.setTransform(-1, 0, 0, 1, 100, 100);
+  ctx.fillStyle = "rgba(255, 128, 255, 0.5)";
+  ctx.fillRect(0, 50, 100, 100);
+}
+```
+
+<img src="./assets/iShot_2023-09-28_17.56.57.png" title="" alt="" data-align="center">
+
+## 合成
+
+    已有图形后面再画新图形，还可以用来遮盖指定区域，清除画布中的某些部分（清除区域不仅限于矩形，像clearRect()方法做的那样）以及更多其他操作。
+
+globalCompositeOperation = type：属性设定了在画新图形时采用的遮盖策略，其值是一个标识 12 种遮盖方式的字符串。
+
+Compositing 示例
+
+![](./assets/1.png)
+![](./assets/2.png)
+![](./assets/3.png)
+![](./assets/4.png)
+![](./assets/5.png)
+![](./assets/6.png)
+![](./assets/7.png)
+![](./assets/8.png)
+![](./assets/9.png)
+
+可以利用 globalCompositeOperation 属性，实现刮刮卡效果
+
+```js
+      var cav = document.getElementById("canvas");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx = cav.getContext("2d");
+
+      let gkBackground = new Image()
+      gkBackground.src = '../assets/img/ggk.png'
+
+      gkBackground.onload = function() {
+        ctx.drawImage(gkBackground, 0, 0, 600, 400);
+      }
+      // 定义isDraw 是否可进行画画
+      let isDraw = false;
+      cav.onmousedown = () => isDraw = true;
+      cav.onmouseup = () => isDraw = false;
+
+      cav.onmousemove = (e) => {
+        if (isDraw) {
+          let x = e.pageX
+          let y = e.pageY
+          // 鼠标处于按下状态
+          let path2D = new Path2D()
+          path2D.arc(x, y, 20,0, Math.PI *2);
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fill(path2D)
+        }
+      }
+```
+
+![](./assets/2023-09-29%2002.06.43.gif)
+
+## 裁切路径
+
+裁切路径和普通的 canvas 图形差不多，不同的是它的作用是遮罩，用来隐藏不需要的部分
+
+![](./assets/canvas_clipping_path.png)
+
+
+
+```js
+    // 画布上加载图片
+    var path2D = new Path2D()
+    path2D.moveTo(200, 100);
+    path2D.lineTo(225, 40);
+    path2D.lineTo(250, 100);
+    path2D.lineTo(315, 120);
+    path2D.lineTo(260, 150);
+    path2D.lineTo(280, 215);
+    path2D.lineTo(225, 180);
+    path2D.lineTo(170, 215);
+    path2D.lineTo(190, 150);
+    path2D.lineTo(135, 120);
+    path2D.lineTo(200, 100);
+    ctx.lineWidth=10;
+    ctx.clip(path2D); // 按照path2D路径 对画布进行裁剪
+
+    let img = new Image()
+    img.src = '../assets/img/ggk.png'
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0, 600, 400);
+      ctx.stroke(path2D);
+    }
+```
+
+![](./assets/iShot_2023-09-29_03.55.34.png)
+
+### clip的例子
+
+这个例子，我会用一个圆形的裁切路径来限制随机星星的绘制区域。
+
+```js
+function draw() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+  ctx.fillRect(0,0,150,150);
+  ctx.translate(75,75);
+
+  // Create a circular clipping path
+  ctx.beginPath();
+  ctx.arc(0,0,60,0,Math.PI*2,true);
+  ctx.clip();
+
+  // draw background
+  var lingrad = ctx.createLinearGradient(0,-75,0,75);
+  lingrad.addColorStop(0, '#232256');
+  lingrad.addColorStop(1, '#143778');
+
+  ctx.fillStyle = lingrad;
+  ctx.fillRect(-75,-75,150,150);
+
+  // draw stars
+  for (var j=1;j<50;j++){
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.translate(75-Math.floor(Math.random()*150),
+                  75-Math.floor(Math.random()*150));
+    drawStar(ctx,Math.floor(Math.random()*4)+2);
+    ctx.restore();
+  }
+}
+
+function drawStar(ctx,r){
+  ctx.save();
+  ctx.beginPath()
+  ctx.moveTo(r,0);
+  for (var i=0;i<9;i++){
+    ctx.rotate(Math.PI/5);
+    if(i%2 == 0) {
+      ctx.lineTo((r/0.525731)*0.200811,0);
+    } else {
+      ctx.lineTo(r,0);
+    }
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+```
+
+![](./assets/iShot_2023-09-29_03.56.54.png)
+
+## 像素操作

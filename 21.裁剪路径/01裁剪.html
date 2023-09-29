@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="450">
+    当前浏览器不支持canvas，请下载最新浏览器
+    <a href="https://www.google.cn/chrome/">下载Chrome</a>
+  </canvas>
+  <script>
+    // 1.找到canvas对象
+    var cav = document.getElementById("canvas");
+    // 2.获取画布的 2D 渲染上下文
+    var ctx = cav.getContext("2d");
+
+    // 画布上加载图片
+    var path2D = new Path2D()
+    path2D.moveTo(200, 100);
+    path2D.lineTo(225, 40);
+    path2D.lineTo(250, 100);
+    path2D.lineTo(315, 120);
+    path2D.lineTo(260, 150);
+    path2D.lineTo(280, 215);
+    path2D.lineTo(225, 180);
+    path2D.lineTo(170, 215);
+    path2D.lineTo(190, 150);
+    path2D.lineTo(135, 120);
+    path2D.lineTo(200, 100);
+    ctx.lineWidth=10;
+    ctx.clip(path2D); // 按照path2D路径 对画布进行裁剪
+
+    let img = new Image()
+    img.src = '../assets/img/ggk.png'
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0, 600, 400);
+      ctx.stroke(path2D);
+    }
+    
+  </script>
+</body>
+</html>

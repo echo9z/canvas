@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        background-color: hsl(42.31deg 100% 84.71%);
+        /* position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10; */
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+    <button onclick="clearSignature()">重新签名</button>
+    <button onclick="saveSignature()">保存签名</button>
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      let isDrawing = false;
+      let lastX, lastY;
+      
+      // 鼠标按下事件
+      function handleMouseDown(e) {
+        isDrawing = true;
+        [lastX, lastY] = [e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop];
+      }
+      
+      // 鼠标移动事件
+      function handleMouseMove(e) {
+        if (!isDrawing) return; // 如果鼠标没有按下，则退出函数
+      
+        const x = e.clientX - canvas.offsetLeft;
+        const y = e.clientY - canvas.offsetTop;
+      
+        ctx.lineWidth= 5;
+        
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      
+        [lastX, lastY] = [x, y];
+      }
+      
+      // 鼠标释放事件
+      function handleMouseUp() {
+        isDrawing = false;
+      }
+      
+      // 清除签名
+      function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      
+      // 保存签名
+      function saveSignature() {
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      
+        // 将图片数据转换成 base64 格式
+        const base64ImageData = canvas.toDataURL();
+        console.log(base64ImageData);
+      }
+      
+      // 绑定事件
+      canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mouseup', handleMouseUp);
+      canvas.addEventListener('mouseout', handleMouseUp);
+
+
+    </script>
+  </body>
+</html>

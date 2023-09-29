@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #gk{
+        width: 600px;
+        height: 400px;
+        font-size: 45px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 400px;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: hsl(42.31deg 100% 84.71%);
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gk">500万大奖</div>
+    <canvas id="canvas" width="600" height="400">
+      当前浏览器不支持canvas，请下载最新浏览器
+      <a href="https://www.google.cn/chrome/">下载Chrome</a>
+    </canvas>
+    <script>
+      // Math.random * 10
+      // 1.找到canvas对象
+      var cav = document.getElementById("canvas");
+      // 2.获取画布的 2D 渲染上下文
+      var ctx = cav.getContext("2d");
+
+      let gkBackground = new Image()
+      gkBackground.src = '../assets/img/ggk.png'
+
+      gkBackground.onload = function() {
+        ctx.drawImage(gkBackground, 0, 0, 600, 400);
+      }
+      // 定义isDraw 是否可进行画画
+      let isDraw = false;
+      cav.onmousedown = () => isDraw = true;
+      cav.onmouseup = () => isDraw = false;
+
+      cav.onmousemove = (e) => {
+        if (isDraw) {
+          let x = e.pageX
+          let y = e.pageY
+          // 鼠标处于按下状态
+          let path2D = new Path2D()
+          path2D.arc(x, y, 20,0, Math.PI *2);
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fill(path2D)
+        }
+      }
+
+    </script>
+  </body>
+</html>
