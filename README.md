@@ -2189,7 +2189,7 @@ var myImageData = ctx.getImageData(left, top, width, height);
       // 通过ctx
       let imageData = ctx.getImageData(0, 0, 300, 250);
       console.log("🚀 获取像素对象数据:", imageData.data)
-      
+
       for (let i = 0; i < imageData.data.length; i+=4) {
         imageData.data[i] = 255 - imageData.data[i]
         imageData.data[i+1] = 255 - imageData.data[i+1]
@@ -2201,10 +2201,6 @@ var myImageData = ctx.getImageData(left, top, width, height);
       ctx.putImageData(imageData, 0, 0, 150, 125, 150, 125); // 以300,250点位，将给定ImageData对象中的数据绘制到画布上。
     }
 ```
-
-
-
-
 
 ### 颜色选择器
 
@@ -2633,11 +2629,11 @@ ctx.isPointInStroke(path, x, y);
 
 首先，可以用window.setInterval(), window.setTimeout(),和window.requestAnimationFrame()来设定定期执行一个指定函数。
 
-setInterval(function, delay)(en-US)
+setInterval(function, delay)
 
 当设定好间隔时间后，function 会定期执行。
 
-setTimeout(function, delay)(en-US)
+setTimeout(function, delay)
 
 在设定好的时间之后执行函数
 
@@ -2648,3 +2644,164 @@ requestAnimationFrame(callback)
 如果你并不需要与用户互动，你可以使用 setInterval() 方法，它就可以定期执行指定代码。如果我们需要做一个游戏，我们可以使用键盘或者鼠标事件配合上 setTimeout() 方法来实现。通过设置事件监听，我们可以捕捉用户的交互，并执行相应的动作。
 
 下面的例子，采用 window.requestAnimationFrame()实现动画效果。这个方法提供了更加平缓并更加有效率的方式来执行动画，当系统准备好了重绘条件的时候，才调用绘制动画帧。一般每秒钟回调函数执行 60 次，也有可能会被降低。
+
+## 太阳系的动画
+
+这个例子里面，我会做一个小型的太阳系模拟动画。
+
+```js
+var sun = new Image();
+var moon = new Image();
+var earth = new Image();
+function init(){
+  sun.src = 'https://mdn.mozillademos.org/files/1456/Canvas_sun.png';
+  moon.src = 'https://mdn.mozillademos.org/files/1443/Canvas_moon.png';
+  earth.src = 'https://mdn.mozillademos.org/files/1429/Canvas_earth.png';
+  window.requestAnimationFrame(draw);
+}
+
+function draw() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+
+  ctx.globalCompositeOperation = 'destination-over';
+  ctx.clearRect(0,0,300,300); // clear canvas
+
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.strokeStyle = 'rgba(0,153,255,0.4)';
+  ctx.save();
+  ctx.translate(150,150);
+
+  // Earth
+  var time = new Date();
+  ctx.rotate( ((2*Math.PI)/60)*time.getSeconds() + ((2*Math.PI)/60000)*time.getMilliseconds() );
+  ctx.translate(105,0);
+  ctx.fillRect(0,-12,50,24); // Shadow
+  ctx.drawImage(earth,-12,-12);
+
+  // Moon
+  ctx.save();
+  ctx.rotate( ((2*Math.PI)/6)*time.getSeconds() + ((2*Math.PI)/6000)*time.getMilliseconds() );
+  ctx.translate(0,28.5);
+  ctx.drawImage(moon,-3.5,-3.5);
+  ctx.restore();
+
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(150,150,105,0,Math.PI*2,false); // Earth orbit
+  ctx.stroke();
+
+  ctx.drawImage(sun,0,0,300,300);
+  window.requestAnimationFrame(draw);
+}
+
+init();
+```
+
+## 动画时钟
+
+这个例子实现一个动态时钟，可以显示当前时间。
+
+```js
+      var canvas = document.getElementById("canvas");
+      function clock(canvas) {
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // 保存初始时的画布坐标位置位置 上下对象
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((Math.PI / 180) * -90);
+
+        ctx.beginPath();
+        ctx.lineWidth = 5;
+        ctx.arc(0, 0, 190, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.closePath();
+        ctx.save();
+
+        for (let i = 0; i < 12; i++) {
+          // 小时刻度
+          ctx.beginPath();
+          ctx.moveTo(170, 0);
+          ctx.lineTo(190, 0);
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = "gray";
+          // ctx.lineCap = 'round';
+          ctx.stroke();
+          ctx.closePath();
+
+          ctx.rotate((2 * Math.PI) / 12);
+        }
+
+        ctx.restore(); // 回复到旋转90°的样式
+        ctx.save(); // 再保存旋转90°的样式
+        for (let i = 0; i < 60; i++) {
+          // 小时刻度
+          ctx.beginPath();
+          ctx.moveTo(180, 0);
+          ctx.lineTo(190, 0);
+          ctx.lineWidth = 2;
+          // ctx.lineCap = 'round';
+          ctx.strokeStyle = "gray";
+          ctx.stroke();
+          ctx.closePath();
+
+          ctx.rotate((2 * Math.PI) / 60);
+        }
+        ctx.restore(); // 回复到旋转90°的样式
+        ctx.save(); // 再保存旋转90°的样式
+
+        var now = new Date();
+        var hour = now.getHours() >= 12 ? now.getHours() - 12 : now.getHours();
+        var min = now.getMinutes();
+        var sec = now.getSeconds();
+        console.log("🚀 ~:", hour, min, sec);
+
+        // 绘制秒针
+        ctx.rotate(((2 * Math.PI) / 60) * sec);
+        ctx.beginPath();
+        ctx.moveTo(-30, 0);
+        ctx.lineTo(190, 0);
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore(); // 回复到旋转90°的样式
+        ctx.save(); // 再保存旋转90°的样式
+
+        // 绘制分针
+        ctx.rotate(
+          ((2 * Math.PI) / 60) * min + ((2 * Math.PI) / 60 / 60) * sec
+        );
+        ctx.beginPath();
+        ctx.moveTo(-30, 0);
+        ctx.lineTo(140, 0);
+        ctx.strokeStyle = "gray";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore(); // 回复到旋转90°的样式
+        ctx.save(); // 再保存旋转90°的样式
+
+        ctx.rotate(
+          ((2 * Math.PI) / 12) * hour + 
+            ((2 * Math.PI) / 12 / 60) * min +
+            ((2 * Math.PI) / 60 / 60) * sec
+        );
+        ctx.beginPath();
+        ctx.moveTo(-30, 0);
+        ctx.lineTo(80, 0);
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore(); // 恢复到90°
+        ctx.restore(); // 恢复到初始默认值
+
+        requestAnimationFrame(clock.bind(this, canvas));
+      }
+      clock(canvas)
+```
