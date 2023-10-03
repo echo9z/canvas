@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/pixi-filters@latest/dist/pixi-filters.js"></script> -->
+  </head>
+  <body>
+    <script>
+      // 创建应用
+      var app = new PIXI.Application({
+        width: window.innerWidth, // 画布宽
+        height: window.innerHeight, // 画布高
+        background: 0xffffff, // 画布背景颜色
+        resolution: window.devicePixelRatio || 1,
+        antialias: true, // 设置抗锯齿
+        // resizeTo: window
+      });
+      document.body.appendChild(app.view);
+      // 0.创建一个容器
+      const container = new PIXI.Container();
+      app.stage.addChild(container);
+
+      // 1.创建基础恐龙精灵
+      // 添加恐龙游戏的精灵纹理
+      const dinoBaseTexture = PIXI.BaseTexture.from("./img/ch2.png");
+      // 创建恐龙纹理，通过Rectangle 矩形截图
+      const dinoTexture = new PIXI.Texture(
+        dinoBaseTexture,
+        new PIXI.Rectangle(75, 0, 88, 100) // 创建的精灵用一个矩形形状截取
+      );
+      // 创建恐龙精灵
+      const dino = new PIXI.Sprite(dinoTexture);
+      dino.x = 60
+      dino.y = window.innerHeight - 30 - 100;
+      dino.visible = true
+      container.addChild(dino);
+
+      // 2.恐龙跑步动画
+      // 恐龙跑步数组，一共两张图,，数组中添加两个纹理
+      const runTextures = [];
+      for (let i = 0; i < 2; i++) {
+        runTextures.push(
+          new PIXI.Texture(
+            dinoBaseTexture,
+            new PIXI.Rectangle(1680 + (2 + i) * 88, 0, 82, 100)
+          )
+        );
+      }
+      // 创建一个精灵动画
+      const runAnimation = new PIXI.AnimatedSprite(runTextures);
+      runAnimation.animationSpeed = 0.1; // 动画的播放速度
+      runAnimation.play();
+      runAnimation.visible = false;
+      container.addChild(runAnimation);
+
+      // 看恐龙跳跃精灵
+      const jumpTexture = new PIXI.Texture(
+        dinoBaseTexture,
+        new PIXI.Rectangle(1680, 0, 82, 100)
+      );
+      // 创建恐龙精灵
+      const jumpSprite = new PIXI.Sprite(jumpTexture);
+      jumpSprite.x = 60
+      jumpSprite.y = window.innerHeight - 30 - 100;
+      jumpSprite.visible = false
+      container.addChild(jumpSprite);
+
+      // 创建地面精灵
+      const groundTexture = new PIXI.Texture(
+        dinoBaseTexture,
+        new PIXI.Rectangle(50, 100, 2300, 30)
+      );
+      // 平铺精灵 用于平铺
+      const groundSprite = new PIXI.TilingSprite(groundTexture)
+      groundSprite.width = window.innerWidth
+      groundSprite.height = 30
+      // 平铺精灵 位置
+      groundSprite.position.set(0, window.innerHeight - 50)
+      container.addChild(groundSprite)
+
+      // 创建仙人掌精灵
+      // 创建地面精灵
+      const cactusTexture = new PIXI.Texture(
+        dinoBaseTexture,
+        new PIXI.Rectangle(515, 0, 30, 60)
+      );
+      const cactusSprite = new PIXI.Sprite(cactusTexture)
+      cactusSprite.position.set(window.innerWidth, window.innerHeight - 30 - 60)
+      container.addChild(cactusSprite)
+
+      // 云
+      const cloudTexture = new PIXI.Texture(
+        dinoBaseTexture,
+        new PIXI.Rectangle(165, 0, 95, 30)
+      );
+      const cloudSprite = new PIXI.Sprite(cloudTexture)
+      cloudSprite.scale.set(0.8)
+      cloudSprite.position.set(window.innerWidth/2+150, window.innerHeight/2 + 150)
+      container.addChild(cloudSprite)
+
+      // 创建文字
+      const startText = new PIXI.Text('Start Game', {
+        fontFamily: 'Arial',
+        fontSize: 36,
+        fill: 0x535353,
+        align: 'center',
+      })
+      startText.anchor.set(0.5)
+      startText.position.set(window.innerWidth/2, window.innerHeight/2)
+      container.addChild(startText)
+
+      startText.eventMode = 'static';
+      startText.on('click', () => {
+        dino.visible = false;
+        playGame()
+      })
+
+      // restart动画纹理
+      const restartTextures = [];
+      for (let i = 0; i < 5; i++) {
+        restartTextures.push(
+          new PIXI.Texture(
+            dinoBaseTexture,
+            new PIXI.Rectangle(218 + i * 72, 130, 72, 64)
+          )
+        );
+      }
+      
+      // 创建一个精灵动画
+      const restartAnimation = new PIXI.AnimatedSprite(restartTextures);
+      restartAnimation.animationSpeed = 0.1; // 动画的播放速度
+      restartAnimation.play();
+      restartAnimation.position.set(window.innerWidth/2, window.innerHeight/2 + 80)
+      restartAnimation.anchor.set(0.5)
+      restartAnimation.scale.set(0.6)
+      restartAnimation.visible = false;
+
+      // restart按钮
+      const resTexture = restartTextures[4]
+      const restartSprite = new PIXI.Sprite(resTexture)
+      restartSprite.position.set(window.innerWidth/2, window.innerHeight/2 + 80)
+      restartSprite.anchor.set(0.5)
+      restartSprite.scale.set(0.6)
+      restartSprite.visible = false;
+      container.addChild(restartAnimation, restartSprite);
+
+      // 判断是否在游戏中
+      let isGaming = false
+      let isGameOver = false
+      function playGame() {
+        isGaming = true
+        console.log('game started');
+        startText.visible = false
+        // 显示恐龙的跑步动画
+        runAnimation.visible = true;
+        runAnimation.x = 60
+        runAnimation.y = window.innerHeight - 30 - 100;
+      }
+
+      restartSprite.eventMode = 'static';
+      restartSprite.on('click', () => {
+        // dino.visible = false;
+        restartGame()
+      })
+
+      // 游戏结束文字
+      const gameOverTexture = new PIXI.Texture(
+        dinoBaseTexture,
+        new PIXI.Rectangle(1295, 28, 382, 24)
+      );
+      const gameOverSprite = new PIXI.Sprite(gameOverTexture)
+      gameOverSprite.position.set(window.innerWidth/2, window.innerHeight/2)
+      gameOverSprite.anchor.set(0.5)
+      gameOverSprite.visible = false
+
+      // 结束恐龙
+      const overDinoTexture = new PIXI.Texture(
+        dinoBaseTexture,
+        new PIXI.Rectangle(1680 + 4 * 88, 0, 82, 100)
+      );
+      const overDinoSprite = new PIXI.Sprite(overDinoTexture)
+      overDinoSprite.position.set(60, window.innerHeight - 30 -100)
+      overDinoSprite.visible = false
+
+      container.addChild(gameOverSprite, overDinoSprite)
+
+      function restartGame() {
+        cactusSprite.position.set(window.innerWidth, window.innerHeight - 30 - 60)
+        overDinoSprite.visible = false
+        gameOverSprite.visible = false
+        restartSprite.visible = false
+        isGaming = false
+        isGameOver = false
+        playGame()
+      }
+
+      // 游戏结束
+      function GameOver() {
+        isGameOver = true
+        isGaming = false
+        console.log('game ended');
+        // 显示恐龙的跑步动画
+        runAnimation.visible = false;
+        gameOverSprite.visible = true
+        overDinoSprite.visible = true;
+        jumpSprite.visible = false;
+        restartAnimation.visible = true;
+        setTimeout(() => {
+          restartAnimation.visible = false;
+          restartSprite.visible = true
+        }, 500)
+      }
+
+      // 游戏得分
+      let score = 0
+      // 跳跃的速度
+      let jumpSpeed = 20
+      // 初始化重力
+      let gravity = 1
+      // 游戏循环
+      app.ticker.add((delta) => {
+        if(isGameOver) return false
+        if(isGaming) {
+          // 地面循环移动
+          groundSprite.tilePosition.x -= 10 // 不断从右往左移动，进行平铺移动
+          cactusSprite.x -= 10
+          cloudSprite.x -= Math.floor(Math.random() * 10)
+          if (cactusSprite.x < -30) {
+            cactusSprite.x = window.innerWidth
+            score++
+          }
+          if(cloudSprite.x < -95) {
+            cloudSprite.x = window.innerWidth
+          }
+        }
+        if(jumpSprite.visible) { // 判断是是跳跃精灵是否显示，即是否跳跃状态
+          // console.log(jumpSprite.visible);
+          jumpSpeed -= gravity
+          jumpSprite.y -= jumpSpeed // 减负值，jump精灵向上移动，减正值，jump向下移动
+          // 当发送jump时
+          if (jumpSprite.y > window.innerHeight -30 -100) {
+            jumpSprite.y = window.innerHeight -30 -100
+            jumpSpeed = 20
+            jumpSprite.visible = false
+            runAnimation.visible = true
+          }
+        }
+        // 判读是否 仙人掌的x和y的距离
+        if(
+          jumpSprite.y > cactusSprite.y - 90 &&
+          cactusSprite.x < jumpSprite.x + 60 &&
+          cactusSprite.x > jumpSprite.x - 60
+        ) {
+          // 游戏结束
+          GameOver()
+        }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && isGaming) {
+          console.log("jumping");
+          jumpSprite.visible = true;
+          runAnimation.visible = false;
+        }
+      })
+    </script>
+  </body>
+</html>
