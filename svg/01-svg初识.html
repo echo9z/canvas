@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    svg {
+      border: 1px solid red;
+    }
+  </style>
+</head>
+<body>
+  <img src="./assets/img/GO.png" alt="">
+  <img src="./assets/img/k8s.svg" alt="">
+  <!-- 整个svg的画布宽度300*200 -->
+  <svg width="300" height="200">
+    <!-- 圆心0,0 -->
+    <circle cx="0" cy="0" r="50"/>
+
+    <!-- 圆心坐标：cx,cy 半径 -->
+    <circle cx="100" cy="100" r="50"/>
+  </svg>
+
+  <!-- 不设置w和h时，默认是300*150，内部元素大于300 * 150时，大于部分会被隐藏。 -->
+  <svg>
+    <circle cx="100" cy="100" r="100"/>
+  </svg>
+</body>
+</html>

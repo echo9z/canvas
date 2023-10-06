@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 1.圆cx,cy画布的右上角 r圆半径 -->
+  <svg width="300" height="300">
+    <circle cx="100" cy="100" r="100"/>
+  </svg>
+
+  <!-- 2.矩形rect, 以x,y作为起始点画圆
+    rx="20" ry="20" 形成矩形的圆角 -->
+  <svg width="400" height="300">
+    <rect x="10" y="10" rx="20" ry="20" width="300" height="200"/>
+  </svg>
+
+  <!-- 3.椭圆 cx,cy为圆心，rx为x轴坐标的半径，ry为y轴坐标的半径，将rx与ry两点之间画圆
+  rx=ry时为圆形 -->
+  <svg width="400" height="300">
+    <ellipse cx="200" cy="150" rx="100" ry="50"/>
+  </svg>
+
+  <!-- 4.线段 line -->
+  <svg width="400" height="300">
+    <!-- 设置 线段描边颜色 stroke：black -->
+    <line x1="50" y1="200"  x2="100" y2="50" style="stroke: #000000;"/>
+  </svg>
+  <!-- 5.折线polyline -->
+  <svg width="400" height="300">
+    <!-- polyline中的 fill默认是填充的-->
+    <polyline points="200 0, 250 0, 250 50, 300 50" />
+    <!-- 把polyline默认为填充需要把fill属性设置为none，形成折线 -->
+    <polyline points="0 0, 50 0, 50 50, 100 50, 150 100" fill="none" style="stroke: #000000;" />
+  </svg>
+  <!-- 多边形polygon -->
+  <svg>
+    <polygon points="0 0, 50 0, 75 30, 75 80, 50 105, 0 105, 0 0"  fill="none" style="stroke: #000000;" />
+  </svg>
+</body>
+</html>
